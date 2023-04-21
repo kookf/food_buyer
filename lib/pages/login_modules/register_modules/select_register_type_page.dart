@@ -40,7 +40,6 @@ class _SelectRegisterTypePageState extends State<SelectRegisterTypePage> {
           ),
           GestureDetector(
               onTap: (){
-                Get.to(page)
               },
               child: Image.asset('images/register_bg1.png')),
           Image.asset('images/register_bg2.png'),
