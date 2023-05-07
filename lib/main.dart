@@ -1,6 +1,8 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:food_buyer/pages/bottom_nav_moudules/bottom_tab_controller.dart';
+import 'package:food_buyer/pages/bottom_nav_moudules/guide_page.dart';
 import 'package:food_buyer/pages/home_modules/home_page.dart';
 import 'package:food_buyer/pages/login_modules/login_page.dart';
 import 'package:food_buyer/utils/persisten_storage.dart';
@@ -44,7 +46,9 @@ class MyApp extends StatelessWidget {
       locale: const Locale('en', 'US'), // 默认指定的语言翻译
       fallbackLocale: const Locale('zh', 'Hant'), // 添
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      builder: BotToastInit(),
+      navigatorObservers: [BotToastNavigatorObserver()],
+      home: GuidePage(),
     );
   }
 }

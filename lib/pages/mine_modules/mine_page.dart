@@ -6,6 +6,9 @@ import 'package:food_buyer/utils/hexcolor.dart';
 import 'package:get/get.dart';
 
 import '../../common/style.dart';
+import '../../services/address.dart';
+import '../../services/dio_manager.dart';
+import 'account_profile_page.dart';
 class MinePage extends StatefulWidget {
 
   const MinePage({Key? key}) : super(key: key);
@@ -19,6 +22,8 @@ late TabController tabController;
 
 
 class _MinePageState extends State<MinePage> with SingleTickerProviderStateMixin{
+
+
 
 
 
@@ -42,7 +47,7 @@ class _MinePageState extends State<MinePage> with SingleTickerProviderStateMixin
           SliverToBoxAdapter(
             child: Container(
               color: Colors.white,
-              height: Get.height/2-100,
+              height: Get.height/2-50,
               child: Stack(
                 children: [
                   Container(

@@ -5,10 +5,19 @@ import 'constants.dart';
 
 class ChatInputField extends StatelessWidget {
 
-  TextEditingController? controller;
-  FocusNode? focusNodel;
-   ChatInputField({
-    this.controller,this.focusNodel,
+  VoidCallback sendVoid;
+  VoidCallback imageSendVoid;
+  VoidCallback fileSendVoid;
+
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+
+    ChatInputField({
+    this.controller,
+     this.focusNode,
+     required this.sendVoid,
+     required this.imageSendVoid,
+     required this.fileSendVoid,
     Key? key,
   }) : super(key: key);
 
@@ -22,7 +31,7 @@ class ChatInputField extends StatelessWidget {
       child: SafeArea(
           child: Row(
         children: [
-          Icon(Icons.mic, color: kPrimaryColor),
+          // Icon(Icons.mic, color: kPrimaryColor),
           SizedBox(width: kDefaultPadding),
           Expanded(
             child: Container(
@@ -33,31 +42,45 @@ class ChatInputField extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.sentiment_satisfied_alt_outlined,
-                    color: Theme.of(context).textTheme.bodyText1?.color?.withOpacity(0.64),
-                  ),
+                  // Icon(
+                  //   Icons.sentiment_satisfied_alt_outlined,
+                  //   color: Theme.of(context).textTheme.bodyText1?.color?.withOpacity(0.64),
+                  // ),
                   SizedBox(width: kDefaultPadding / 2),
                   Expanded(
                     child: TextField(
-                      focusNode: focusNodel,
+                      focusNode: focusNode,
                       controller: controller,
                       decoration: InputDecoration(border: InputBorder.none, hintText: 'Type Message'),
                     ),
                   ),
-                  Icon(
-                    Icons.attach_file,
-                    color: Theme.of(context).textTheme.bodyText1?.color?.withOpacity(0.64),
+                  GestureDetector(
+                    onTap: (){
+                      fileSendVoid();
+                    },
+                    child: Icon(
+                      Icons.attach_file,
+                      color: Theme.of(context).textTheme.bodyText1?.color?.withOpacity(0.64),
+                    ),
                   ),
                   SizedBox(width: kDefaultPadding / 4),
-                  Icon(
-                    Icons.camera_alt_outlined,
-                    color: Theme.of(context).textTheme.bodyText1?.color?.withOpacity(0.64),
-                  ),
+                  GestureDetector(
+                    onTap: (){
+                      imageSendVoid();
+                    },
+                    child: Icon(
+                      Icons.camera_alt_outlined,
+                      color: Theme.of(context).textTheme.bodyText1?.color?.withOpacity(0.64),
+                    ),
+                  )
                 ],
               ),
             ),
           ),
+          SizedBox(width: 10,),
+          IconButton(onPressed: (){
+            sendVoid();
+          }, icon: Image.asset('images/ic_chat_send.png',width: 35,height: 35,))
         ],
       )),
     );

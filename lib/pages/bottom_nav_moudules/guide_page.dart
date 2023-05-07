@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:food_buyer/pages/login_modules/login_page.dart';
 import 'package:get/get.dart';
 import '../../utils/persisten_storage.dart';
+import 'bottom_tab_controller.dart';
 
 
 class GuidePage extends StatefulWidget {
@@ -33,8 +35,11 @@ class _GuidePageState extends State<GuidePage> {
   getToken()async{
     if(await PersistentStorage().getStorage('token')==null){
       isLogin = false;
+      Get.offAll(LoginPage());
     }else{
       isLogin = true;
+      Get.offAll(TabPage1());
+
     }
   }
 

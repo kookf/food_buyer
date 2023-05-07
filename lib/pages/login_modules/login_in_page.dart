@@ -1,7 +1,12 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:food_buyer/common/colors.dart';
 import 'package:food_buyer/lang/message.dart';
+import 'package:food_buyer/pages/login_modules/login_model.dart';
+import 'package:food_buyer/services/address.dart';
+import 'package:food_buyer/services/dio_manager.dart';
 import 'package:food_buyer/utils/hexcolor.dart';
+import 'package:food_buyer/utils/persisten_storage.dart';
 import 'package:get/get.dart';
 
 import '../bottom_nav_moudules/bottom_tab_controller.dart';
@@ -19,6 +24,27 @@ class _LoginInPageState extends State<LoginInPage> {
   TextEditingController emailAddressTextEditingController = TextEditingController();
   TextEditingController passWordTextEditingController = TextEditingController();
 
+  requestDataWithLogin()async{
+    var params = {
+      'phone':emailAddressTextEditingController.text,
+      'password':passWordTextEditingController.text
+    };
+    var json = await DioManager().kkRequest(Address.userLogin,bodyParams: params);
+    LoginModel loginModel = LoginModel.fromJson(json);
+    if(loginModel.code == 200){
+      await PersistentStorage().setStorage('token', loginModel.data?.token);
+      await PersistentStorage().setStorage('socket_key', loginModel.data?.socketKey);
+      await PersistentStorage().setStorage('id', loginModel.data?.id);
+      await PersistentStorage().setStorage('phone', loginModel.data?.phone);
+
+      Get.offAll(TabPage1());
+
+    }else{
+      BotToast.showText(text: loginModel.message!);
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,8 +52,9 @@ class _LoginInPageState extends State<LoginInPage> {
 
       ),
       body: ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         children: [
-         Padding(padding: EdgeInsets.only(left: 25,top: 55),
+         Padding(padding: EdgeInsets.symmetric(horizontal: 25,vertical: 15),
            child:  RichText(text: TextSpan(
              children: [
                TextSpan(text: 'WelCome to ',style: TextStyle(fontSize: 22,
@@ -50,7 +77,7 @@ class _LoginInPageState extends State<LoginInPage> {
 
           Container(
             padding: EdgeInsets.only(left: 25,top: 45),
-            child: Text(I18nContent.emailAddressLabel.tr,style: TextStyle(
+            child: Text(I18nContent.phoneLabel.tr,style: TextStyle(
               fontWeight: FontWeight.w700,fontSize: 22,color: Colors.black
             ),),
           ),
@@ -62,7 +89,7 @@ class _LoginInPageState extends State<LoginInPage> {
               padding: const EdgeInsets.only(left: 15),
               width: Get.width,
               decoration: BoxDecoration(
-                color: HexColor('#F5F5F5'),
+                color: AppColor.searchBgColor,
                 borderRadius: const BorderRadius.all(Radius.circular(8))
               ),
               alignment: Alignment.centerLeft,
@@ -74,7 +101,7 @@ class _LoginInPageState extends State<LoginInPage> {
                   isCollapsed: true,
                   border: InputBorder.none,
                   hintStyle: TextStyle(fontSize: 18),
-                  hintText: I18nContent.pleaseEnterYourEmail.tr
+                  hintText: I18nContent.pleaseEnterYourPhone.tr
                 ),
               ),
             ),
@@ -118,9 +145,10 @@ class _LoginInPageState extends State<LoginInPage> {
             padding: EdgeInsets.only(left: 15,right: 15),
             child:   MaterialButton(onPressed: (){
 
-              if(emailAddressTextEditingController.text == '123'){
-                Get.to(TabPage());
-              }
+              requestDataWithLogin();
+              // if(emailAddressTextEditingController.text == '123'){
+              //   Get.offAll(TabPage());
+              // }
 
             },child: Text(I18nContent.loginLabel.tr,style: TextStyle(color: Colors.white,fontSize: 18),)
               ,color: AppColor.themeColor,minWidth: Get.width,height: 55,shape: const RoundedRectangleBorder(

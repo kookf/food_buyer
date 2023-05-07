@@ -7,13 +7,13 @@ class AppColor{
   /// 主题色
   static Color themeColor = HexColor('#306BEB');
   /// 界面背景色
-  static Color bgColor = HexColor('#FAF7F7');
+  static Color bgColor = HexColor('#FAFAFA');
   /// 按鈕背景色
   static Color btnBgColors = HexColor('#ABAFD8');
   /// 輸入框邊框顏色
   static Color textFieldBorderColor = HexColor('#5B426A');
-  /// 註冊背景色
-  static Color registerBgColor = HexColor('#ABAFD8');
+  /// 搜索框背景色
+  static Color searchBgColor = HexColor('##F5F5F5');
 
   /// 常规字体
   static Color textColor = HexColor('#232323');

@@ -17,13 +17,14 @@ class LoginPage extends GetView{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: Column(
+      body: ListView(
+        padding: EdgeInsets.all(0),
         children: [
           Container(
             margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             height: 35,
             width: Get.width,
-            color: Colors.red,
+            color: Colors.white,
             alignment: Alignment.centerRight,
             child: IconButton(onPressed: () {
               Get.to(SelectLanguagePage());
@@ -34,17 +35,19 @@ class LoginPage extends GetView{
             width: Get.width,
             // color: AppColor.themeColor,
             height: Get.height/2-50,
-            child: Image.asset('images/ic_login_image.png'),
+            child: Image.asset(
+                'images/ic_login_image.png',cacheHeight: 400,
+            cacheWidth: 400,),
           ),
           SizedBox(height: 15,),
-          RichText(text: TextSpan(
-            children: [
-              TextSpan(text: 'Welcome to ',style:
-              TextStyle(fontWeight: FontWeight.w700,fontSize: 25,color: Colors.black)),
-              TextSpan(text: 'FoodBuyer ',
-                  style: TextStyle(fontWeight: FontWeight.w700,fontSize: 25,color: AppColor.themeColor)),
-            ]
-          )),
+          Center(child:    RichText(text: TextSpan(
+              children: [
+                const TextSpan(text: 'Welcome to ',style:
+                TextStyle(fontWeight: FontWeight.w700,fontSize: 25,color: Colors.black)),
+                TextSpan(text: 'FoodBuyer ',
+                    style: TextStyle(fontWeight: FontWeight.w700,fontSize: 25,color: AppColor.themeColor)),
+              ]
+          )),),
           Container(
             margin: EdgeInsets.only(left: 35,right: 35,top: 25),
             child: Text('''Connect your business with potential Food & Beverage buyer orsuppliers for more lucrativebusiness opportunities
@@ -83,7 +86,9 @@ class LoginPage extends GetView{
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(25)),
               ),),
-          )
+          ),
+          SizedBox(height: 10,),
+
 
         ],
       ),

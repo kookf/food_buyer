@@ -1,11 +1,15 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:food_buyer/pages/chat_modules/components/file_message.dart';
 import 'package:food_buyer/pages/chat_modules/components/text_message.dart';
+import 'package:food_buyer/services/address.dart';
 
 import '../models/ChatMessage.dart';
 import 'audio_message.dart';
 import 'constants.dart';
+import 'image_message.dart';
 import 'video_message.dart';
 
 class Message extends StatelessWidget {
@@ -21,31 +25,63 @@ class Message extends StatelessWidget {
       switch (message.messageType) {
         case ChatMessageType.text:
           return TextMessage(message: message);
+        case ChatMessageType.image:
+          return ImageMessage(message:message);
         case ChatMessageType.audio:
           return AudioMessage(message: message);
         case ChatMessageType.video:
           return VideoMessage(message: message);
+        case ChatMessageType.file:
+          return FileMessage(message: message);
         default:
           return const SizedBox();
       }
     }
-
     return Padding(
       padding: const EdgeInsets.only(top: kDefaultPadding),
       child: Row(
         mainAxisAlignment: message.isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
-          if (!message.isSender) ...[
-            const CircleAvatar(
-              radius: 12,
-              backgroundImage: AssetImage('images/user_2.png'),
-            ),
+          if (!message.isSender)
+            ...[
+              // MessageStatusDot(status: message.messageStatus),
+              Container(
+                margin: EdgeInsets.only(left: 2),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.
+                    all(Radius.circular(15))
+                ),
+                clipBehavior: Clip.hardEdge,
+                child: CachedNetworkImage(
+                  width: 30,
+                  height: 30,
+                  imageUrl: '${Address.homeHost}'
+                      '${Address.storage}/${message.avatar}',
+
+                ),
+              ),
             const SizedBox(
               width: kDefaultPadding / 2,
             )
           ],
           messageContaint(message),
-          if (message.isSender) MessageStatusDot(status: message.messageStatus)
+          if (message.isSender)
+            Container(
+              margin: EdgeInsets.only(left: 2),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.
+                all(Radius.circular(15))
+              ),
+              clipBehavior: Clip.hardEdge,
+              child: CachedNetworkImage(
+                width: 30,
+                height: 30,
+                imageUrl: '${Address.homeHost}'
+                    '${Address.storage}/${message.avatar}',
+
+              ),
+            )
+            // MessageStatusDot(status: message.messageStatus)
         ],
       ),
     );

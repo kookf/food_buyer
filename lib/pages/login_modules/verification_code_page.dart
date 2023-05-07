@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
 import 'package:food_buyer/common/colors.dart';
+import 'package:food_buyer/pages/login_modules/register_modules/register_complete_page.dart';
 import 'package:get/get.dart';
 import '../../lang/message.dart';
 
@@ -74,7 +75,7 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
             padding: const EdgeInsets.only(left: 40, right: 40),
             child: MaterialButton(
               onPressed: () {
-
+                Get.to(RegisterCompletePage());
               },
               color: AppColor.themeColor,
               minWidth: Get.width,
