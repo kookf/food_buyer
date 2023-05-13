@@ -1,6 +1,8 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:food_buyer/common/colors.dart';
 import 'package:food_buyer/pages/chat_modules/components/long_menu_item.dart';
+import 'package:food_buyer/pages/chat_modules/create_notepad_page.dart';
 import 'package:food_buyer/services/address.dart';
 import 'package:food_buyer/services/dio_manager.dart';
 import '../models/ChatMessage.dart';
@@ -24,7 +26,7 @@ class TextMessage extends StatelessWidget {
     var json = await DioManager().kkRequest(Address.notePadAdd,
     bodyParams: params);
     if(json['code'] == 200){
-      BotToast.showText(text: json['message']);
+      BotToast.showText(text: '添加成功');
     }else{
       BotToast.showText(text: json['message']);
     }
@@ -39,6 +41,8 @@ class TextMessage extends StatelessWidget {
         print(' Get.height, ==${ Get.height}');
 
         var itemView = LongMenuItem(addToNotepadVoid: (){
+          Get.to(CreateNotePadPage(message));
+          return;
           requestDataWithAddNotPad();
         },);
         if(olpdt.globalPosition.dy+280>=Get.height){
@@ -61,32 +65,48 @@ class TextMessage extends StatelessWidget {
         }
         // Get.dialog(LongMenuItem());
       },
-      child: Container(
-        width: 200,
-        margin: EdgeInsets.only(bottom: 5),
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 0.75,
-            vertical: kDefaultPadding / 2),
-        decoration: BoxDecoration(
-            color: kPrimaryColor.withOpacity(message.isSender ? 1 : 0.08),
-            borderRadius: BorderRadius.circular(5)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              message.text,
-              style: TextStyle(color: message.isSender ?
-              Colors.white : Theme.of(context).textTheme.bodyText1?.color),
+      child:Column(
+        children: [
+          message.isSender==true?SizedBox():Container(
+
+            width: Get.width/2-5,
+            // color: Colors.red,
+            child: Text('${message.nick_name}',style: TextStyle(
+              fontSize: 11,color: AppColor.smallTextColor
+            ),),
+          ),
+          SizedBox(height: 5,),
+          Container(
+            width: 200,
+
+            margin: EdgeInsets.only(bottom: 5),
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 0.75,
+                vertical: kDefaultPadding / 2),
+            decoration: BoxDecoration(
+                color: AppColor.themeColor.withOpacity(message.isSender ? 1 : 0.08),
+                borderRadius: BorderRadius.circular(5)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  message.text,
+                  style: TextStyle(color: message.isSender ?
+                  Colors.white : Theme.of(context).textTheme.bodyText1?.color),
+                ),
+                Container(
+                  padding: EdgeInsets.only(top: 5),
+                  alignment: message.isSender?Alignment.centerRight:Alignment.centerRight,
+                  width: 200,
+                  // color: Colors.red,
+                  child: Text(message.time,
+                    style: TextStyle(color: message.isSender?
+                  Colors.white:Colors.grey,fontSize: 11),),
+                )
+              ],
             ),
-            Container(
-              alignment: message.isSender?Alignment.centerRight:Alignment.centerRight,
-              width: 200,
-              // color: Colors.red,
-              child: Text(message.time,style: TextStyle(color: message.isSender?
-              Colors.white:Colors.grey,fontSize: 12),),
-            )
-          ],
-        ),
-      ),
+          ),
+        ],
+      )
     );
   }
 }

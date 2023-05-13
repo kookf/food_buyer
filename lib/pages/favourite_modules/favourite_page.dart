@@ -60,8 +60,6 @@ class _FavouritePageState extends State<FavouritePage> {
                             border: InputBorder.none,
                             isCollapsed: true,
                             hintText: I18nContent.searchChat.tr,
-                            hintStyle:
-                            const TextStyle(fontSize: 16, color: Colors.black),
                           ),
                         ))
                   ],

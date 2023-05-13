@@ -125,31 +125,36 @@ class _TabPage1State extends State<TabPage1> {
           break;
         case 0:
           if(json['code'] == 200){
-            BotToast.showText(text: 'webSocket连接成功');
+            print('webSocket连接成功');
+            // BotToast.showText(text: 'webSocket连接成功');
             if(socket_status==0){
               socket_status = 1;
             }
           }else{
-            BotToast.showText(text: 'webSocket连接失败');
+            print('webSocket连接失败');
           }
           break;
         case 1:
           String time = json['time'];
           mesArr.insert(0,ChatMessage(
               text: json['msg'],
-              time: time.substring(10),
+              time: time,
               messageType: ChatMessageType.text,
               messageStatus: MessageStatus.viewed,
               msgId: json['msg_id'],
               userId: json['user_id'],
               room_key: json['room_key'],
               avatar: json['avatar'],
+              nick_name: json['nick_name'],
               isSender: isSender));
-          // eventBus.fire(EventFn(mesArr));
 
-          EventBusUtil.fire(mesArr);
+          var params = {
+            'arr':mesArr,
+            'type':1,
+          };
 
-          // eventBus.fire(EventFn(mesArr));
+          EventBusUtil.fire(params);
+
 
           print('listtext =========${mesArr.length}');
           break;
@@ -157,39 +162,114 @@ class _TabPage1State extends State<TabPage1> {
           String time = json['time'];
           mesArr.insert(0,ChatMessage(
             // text: json['msg'],
-              time: time.substring(10),
+              time: time,
               messageType: ChatMessageType.image,
               messageStatus: MessageStatus.viewed,
               fileImagePath: '${json['msg']}',
               msgId: json['msg_id'],
               avatar: json['avatar'],
+              nick_name: json['nick_name'],
               userId: json['user_id'],
               isSender: isSender));
-          EventBusUtil.fire(mesArr);
+          var params = {
+            'arr':mesArr,
+            'type':2,
+          };
+          EventBusUtil.fire(params);
           print('mesArr =========${mesArr}');
           break;
         case 3:
           String time = json['time'];
           mesArr.insert(0,ChatMessage(
             // text: json['msg'],
-              time: time.substring(10),
+              time: time,
               messageType: ChatMessageType.file,
               messageStatus: MessageStatus.viewed,
               filePath: '${json['msg']}',
               msgId: json['msg_id'],
               userId: json['user_id'],
               avatar: json['avatar'],
+              nick_name: json['nick_name'],
               fileName: json['file_name'],
               isSender: isSender));
-          EventBusUtil.fire(mesArr);
+          var params = {
+            'arr':mesArr,
+            'type':3,
+          };
+          EventBusUtil.fire(params);
           print('mesArr =========${mesArr}');
-
           break;
-      }
+        case 4:
+        ///聊天室人员离开 ，接收到该消息，刷新人员结构
+          String time = json['time'];
+          mesArr.insert(0,ChatMessage(
+              text: json['msg'],
+              time: time,
+              messageType: ChatMessageType.leaveText,
+              messageStatus: MessageStatus.viewed,
+              msgId: json['msg_id'],
+              userId: json['user_id'],
+              room_key: json['room_key'],
+              avatar: json['avatar'],
+              nick_name: json['nick_name'],
+              type: 4,
+              isSender: true));
 
+          var params = {
+            'arr':mesArr,
+            'type':4,
+            'user_nums':json['user_nums'],
+          };
+          EventBusUtil.fire(params);
+          break;
+        case 5:
+        ///发送语音
+          String time = json['time'];
+          mesArr.insert(0,ChatMessage(
+              text: json['msg'],
+              time: time,
+              messageType: ChatMessageType.audio,
+              messageStatus: MessageStatus.viewed,
+              msgId: json['msg_id'],
+              userId: json['user_id'],
+              room_key: json['room_key'],
+              avatar: json['avatar'],
+              nick_name: json['nick_name'],
+              fileName: json['file_name'],
+              type: 5,
+              isSender: isSender));
+
+          var params = {
+            'arr':mesArr,
+            'type':5
+          };
+          EventBusUtil.fire(params);
+          break;
+
+        case 10:
+          ///创建聊天室或者 添加人员。。接收到该消息，有匹配的 room_key,刷新人员结构。
+        ///。没有匹配 添加一个聊天室。
+          List userList = json['user_list'];
+          var params = {
+            'userList':userList,
+            'type':10,
+          };
+          EventBusUtil.fire(params);
+          break;
+        case 11:
+
+        //   List userList = json['user_list'];
+        //   var params = {
+        //     'userList':userList,
+        //     'type':11,
+        //   };
+        //   EventBusUtil.fire(params);
+        //   break;
+
+      }
     }, onError: (e) {
       print('bottom error =====${e}');
-      BotToast.showText(text: '與服務器斷開了連接');
+      BotToast.showText(text: '與webSocket服務器斷開了連接');
     },);
 
 

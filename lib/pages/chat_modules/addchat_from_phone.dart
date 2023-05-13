@@ -4,6 +4,7 @@ import 'package:dropdown_button2/custom_dropdown_button2.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:food_buyer/common/colors.dart';
+import 'package:food_buyer/common/foodbuyer_colors.dart';
 import 'package:food_buyer/pages/chat_modules/components/body.dart';
 import 'package:food_buyer/services/address.dart';
 import 'package:food_buyer/services/dio_manager.dart';
@@ -24,14 +25,15 @@ class _AddChatFromPhoneState extends State<AddChatFromPhone> {
     controlFinishLoad: true,
   );
   var searchTextEditingController = TextEditingController();
-  var selectValue = '個人';
+  var selectValue = '供應商';
 
   var page = 1;
-  var type = 1;
+  var type = 3;
   List dataArr = [];
   requestDataWithUserList() async {
     var params = {
       'keyword': searchTextEditingController.text,
+      // 'keyword': 'Foodbuyer Demo Company ',
       'type': type,
       'page': page,
       'page_size': 10,
@@ -74,10 +76,17 @@ class _AddChatFromPhoneState extends State<AddChatFromPhone> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // requestDataWithUserList();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('通過手機號碼查詢'),
+        title: const Text('查找供應商'),
       ),
       body: Column(
         children: [
@@ -93,80 +102,75 @@ class _AddChatFromPhoneState extends State<AddChatFromPhone> {
               requestDataWithUserList();
             },
             controller: easyRefreshController,
-            child:dataArr.isEmpty?NoDataPage(): ListView.builder(
+            child:dataArr.isEmpty?NoDataPage():
+            ListView.builder(
               padding: EdgeInsets.only(top: 5),
               itemBuilder: (context, index) {
                 AddUserList model = dataArr[index];
                 return  Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       padding: EdgeInsets.only(left: 15,right: 15,top: 5,bottom: 15),
                       color: Colors.white,
                       width: Get.width,
-                      child: Column(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(25)),
+                            ),
+                            clipBehavior: Clip.hardEdge,
+                            child: CachedNetworkImage(
+                              imageUrl:
+                              '${Address.homeHost}${Address.storage}/${model.avatar}',
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) =>
+                                  CircularProgressIndicator(
+                                      value: downloadProgress.progress),
+                              errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                            ),
+                          ),
+                          const SizedBox(width: 15,),
+                          Expanded(child:Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // SizedBox(height: 10,),
+                              Text('昵稱:${model.nickName}'),
+                              const SizedBox(height: 15,),
                               Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(25)),
-                                ),
-                                clipBehavior: Clip.hardEdge,
-                                child: CachedNetworkImage(
-                                  imageUrl:
-                                  '${Address.homeHost}${Address.storage}/${model.avatar}',
-                                  progressIndicatorBuilder:
-                                      (context, url, downloadProgress) =>
-                                      CircularProgressIndicator(
-                                          value: downloadProgress.progress),
-                                  errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                                ),
+                                child: Text('公司名稱:${model.supplierName}'),
                               ),
-                              SizedBox(width: 15,),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+
+                              // Container(
+                              //   padding: EdgeInsets.only(left: 65),
+                              //   child: Text('角色:${model.type==1?
+                              //   '個人':model.type==2?'公司':'供應商'}'),
+                              // ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('${model.nickName}'),
-                                  SizedBox(height: 10,),
+                                  Container(
+                                    child: Text('電郵:${model.email}'),
+                                  ),
 
-                                  Text('${model.phone}'),
                                 ],
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10,),
-                          Container(
-                            padding: EdgeInsets.only(left: 65),
-                            child: Text('名稱:${model.name}'),
-                          ),
-                          SizedBox(height: 10,),
-
-                          Container(
-                            padding: EdgeInsets.only(left: 65),
-                            child: Text('角色:${model.type==1?
-                            '個人':model.type==2?'公司':'供應商'}'),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.only(left: 65),
-                                child: Text('電郵:${model.email}'),
                               ),
                               MaterialButton(onPressed: (){
                                 requestDataWithCreateChat(model.id!);
-                              },child: Text('立即聊天',style: TextStyle(
-                                color: Colors.white
-                              ),),color: AppColor.themeColor,)
+                              },
+                                color: kDTCloud700,child: Text('立即聊天',
+                                  style: Theme.of(context).textTheme
+                                .bodySmall!.copyWith(color: Colors.white),),)
+
+
                             ],
-                          )
-
-
+                          )),
                         ],
                       ),
                     ),
@@ -206,8 +210,8 @@ class _AddChatFromPhoneState extends State<AddChatFromPhone> {
                   buttonWidth: 110,
                   hint: '',
                   dropdownItems: const [
-                    '個人',
-                    '公司',
+                    // '個人',
+                    // '公司',
                     '供應商',
                   ],
                   value: selectValue,
@@ -264,7 +268,7 @@ class _AddChatFromPhoneState extends State<AddChatFromPhone> {
                           child: SizedBox(
                         child: TextField(
                           textInputAction: TextInputAction.search,
-                          keyboardType: TextInputType.phone,
+                          keyboardType: TextInputType.text,
                           autofocus: true,
                           onSubmitted: (value) {
                             print('value ======${value}');
@@ -280,14 +284,13 @@ class _AddChatFromPhoneState extends State<AddChatFromPhone> {
                               type = 3;
                               requestDataWithUserList();
                             }
-                            searchTextEditingController.text = '';
                             setState(() {
 
                             });
                           },
                           controller: searchTextEditingController,
                           decoration: InputDecoration(
-                              hintText: '請輸入${selectValue}聯絡號碼',
+                              hintText: '請輸入${selectValue}名稱',
                               border: InputBorder.none,
                               isCollapsed: true),
                         ),

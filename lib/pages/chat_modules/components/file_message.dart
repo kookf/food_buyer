@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:food_buyer/pages/chat_modules/components/long_menu_item.dart';
 import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../common/colors.dart';
 import '../../../services/address.dart';
 import '../../../services/dio_manager.dart';
 import '../models/ChatMessage.dart';
@@ -27,7 +28,7 @@ class FileMessage extends StatelessWidget {
     var json = await DioManager().kkRequest(Address.notePadAdd,
         bodyParams: params);
     if(json['code'] == 200){
-      BotToast.showText(text: json['message']);
+      BotToast.showText(text: '添加成功');
     }else{
       BotToast.showText(text: json['message']);
     }
@@ -70,37 +71,49 @@ class FileMessage extends StatelessWidget {
         await launch('${Address.homeHost}/storage/${message.filePath}');
 
       },
-      child: Container(
-        width: 200,
-        margin: EdgeInsets.only(bottom: 5),
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 0.75,
-            vertical: kDefaultPadding / 2),
-        decoration: BoxDecoration(
-            color: kPrimaryColor.withOpacity(message.isSender ? 1 : 0.08),
-            borderRadius: BorderRadius.circular(5)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(children: [
-              Image.asset('images/chat_file.png',width: 35,
-                height: 35,color: Colors.white,),
-              SizedBox(width: 5,),
-              Expanded(child: Text(
-                '${message.fileName}',
-                style: TextStyle(color: message.isSender ?
-                Colors.blue : Theme.of(context).textTheme.bodyText1?.color),
-              ),)
-            ],),
-            Container(
-              alignment: message.isSender?Alignment.centerRight:Alignment.centerRight,
-              width: 200,
-              // color: Colors.red,
-              child: Text(message.time,style: TextStyle(color: message.isSender?
-              Colors.white:Colors.grey,fontSize: 12),),
-            )
-          ],
-        ),
-      ),
+      child: Column(
+        children: [
+          message.isSender==true?SizedBox():Container(
+            width: Get.width/2-5,
+            // color: Colors.red,
+            child: Text('${message.nick_name}',style: TextStyle(
+                fontSize: 11,color: AppColor.smallTextColor
+            ),),
+          ),
+          SizedBox(height: 5,),
+          Container(
+            width: 200,
+            margin: EdgeInsets.only(bottom: 5),
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 0.75,
+                vertical: kDefaultPadding / 2),
+            decoration: BoxDecoration(
+                color: kPrimaryColor.withOpacity(message.isSender ? 1 : 0.08),
+                borderRadius: BorderRadius.circular(5)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  Image.asset('images/chat_file.png',width: 35,
+                    height: 35,color: Colors.white,),
+                  SizedBox(width: 5,),
+                  Expanded(child: Text(
+                    '${message.fileName}',
+                    style: TextStyle(color: message.isSender ?
+                    Colors.blue : Theme.of(context).textTheme.bodyText1?.color),
+                  ),)
+                ],),
+                Container(
+                  alignment: message.isSender?Alignment.centerRight:Alignment.centerRight,
+                  width: 200,
+                  // color: Colors.red,
+                  child: Text(message.time,style: TextStyle(color: message.isSender?
+                  Colors.white:Colors.grey,fontSize: 12),),
+                )
+              ],
+            ),
+          ),
+        ],
+      )
     );
   }
 }

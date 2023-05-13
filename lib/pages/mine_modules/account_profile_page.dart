@@ -1,6 +1,8 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:food_buyer/common/foodbuyer_colors.dart';
 import 'package:food_buyer/lang/message.dart';
 import 'package:food_buyer/services/address.dart';
 import 'package:food_buyer/services/dio_manager.dart';
@@ -89,11 +91,9 @@ class _AccountProfilePageState extends State<AccountProfilePage> {
     var json = await DioManager().kkRequest(Address.userProfile,);
     ProfileModel model = ProfileModel.fromJson(json);
     profileModel = model;
-
-    companyController.text = '${profileModel?.data?.name}';
+    companyController.text = '${profileModel?.data?.name ?? '暫無'}';
     nicknameController.text = '${profileModel?.data?.nickName}';
     emailController.text = '${profileModel?.data?.email}';
-
 
     setState(() {
 
@@ -108,12 +108,11 @@ class _AccountProfilePageState extends State<AccountProfilePage> {
     var json = await DioManager().kkRequest(Address.userSave,bodyParams: params);
 
     if(json['code']==200){
-      BotToast.showText(text: '修改成功');
+      BotToast.showText(text: I18nContent.updateSuccessfully);
     }else{
       BotToast.showText(text: json['message']);
     }
     EventBusUtil.fire('menuRefresh');
-
     requestDataWithProfile();
   }
   @override
@@ -126,12 +125,16 @@ class _AccountProfilePageState extends State<AccountProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    ThemeData baseColor = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         actions: [
-          TextButton(onPressed: (){
+          // TextButton(onPressed: (){
+          //
+          // }, child: Text(I18nContent.done.tr))
 
-          }, child: Text(I18nContent.done.tr))
         ],
         title: Text(I18nContent.accountProfile.tr),
       ),
@@ -176,13 +179,15 @@ class _AccountProfilePageState extends State<AccountProfilePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                          const Text('Click to edit your '
-                              'profile picture',style: TextStyle(
-                              fontSize: 15,fontWeight: FontWeight.w600
-                          ),),
+                            Text('Click to edit your '
+                              'profile picture',style: baseColor.textTheme.titleLarge!.copyWith(
+                              color: Colors.black
+                            ),),
                           Text('角色:${profileModel?.data?.type==1?'個人':
                           profileModel?.data?.type == 2?'公司':'供應商'
-                          }',style: TextStyle(fontWeight: FontWeight.w600),)
+                          }',style:baseColor.textTheme.bodySmall!.copyWith(
+                            color: Colors.black
+                          ),)
                         ],)
                       ],
                     ),
@@ -198,12 +203,12 @@ class _AccountProfilePageState extends State<AccountProfilePage> {
                 children: [
 
                   Container(
-                    padding: EdgeInsets.only(left: 25),
+                    padding: const EdgeInsets.only(left: 25),
                     width: Get.width,
                     height: 30,
                     alignment: Alignment.centerLeft,
-                    child: Text('公司名稱',style: TextStyle(color: AppColor.themeColor),),
-                    color: HexColor('#EDF2F9'),
+                    color: kDTCloud50,
+                    child: const Text('Company name', ),
                   ),
                   Container(
                     color: Colors.white,
@@ -213,8 +218,8 @@ class _AccountProfilePageState extends State<AccountProfilePage> {
                     child: TextField(
                       enabled: false,
                       controller: supplierNameController..text
-                      = '${profileModel?.data?.supplier_name}',
-                      decoration: InputDecoration(
+                      = '${profileModel?.data?.supplier_name??'not yet'}',
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Enter your company name',
                       ),
@@ -230,27 +235,26 @@ class _AccountProfilePageState extends State<AccountProfilePage> {
                 children: [
 
                   Container(
-                    padding: EdgeInsets.only(left: 25),
+                    padding: const EdgeInsets.only(left: 25),
                     width: Get.width,
                     height: 30,
                     alignment: Alignment.centerLeft,
-                    child: Text('Email',style: TextStyle(color: AppColor.themeColor),),
-                    color: HexColor('#EDF2F9'),
+                    color: kDTCloud50,
+                    child: const Text('Email', ),
                   ),
                   Container(
                     color: Colors.white,
-                    padding: EdgeInsets.only(left: 25),
+                    padding: const EdgeInsets.only(left: 25),
                     width: Get.width,
                     height: 45,
                     child: TextField(
                       controller: emailController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Enter your company name',
                       ),
                     ),
                   )
-
                 ],
               ),
             ),
@@ -259,24 +263,27 @@ class _AccountProfilePageState extends State<AccountProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.only(left: 25),
+                    padding: const EdgeInsets.only(left: 25),
                     width: Get.width,
                     height: 30,
                     alignment: Alignment.centerLeft,
-                    child: Text('Nick name',style: TextStyle(color: AppColor.themeColor),),
-                    color: HexColor('#EDF2F9'),
+                    color: kDTCloud50,
+                    child: const Text('Nick name', ),
                   ),
                   Container(
-                    padding: EdgeInsets.only(left: 25),
+                    padding: const EdgeInsets.only(left: 25),
                     width: Get.width,
                     height: 45,
                     color: Colors.white,
                     child: TextField(
                       controller: nicknameController,
+                      inputFormatters: <TextInputFormatter>[
+                        LengthLimitingTextInputFormatter(10) //限制长度
+                      ],
                       onSubmitted: (value){
                         requestDataWithUserSave(value);
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Enter your nick name',
                       ),
@@ -286,7 +293,6 @@ class _AccountProfilePageState extends State<AccountProfilePage> {
                 ],
               ),
             ),
-
             // Container(
             //   child: Column(
             //     crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,7 +302,7 @@ class _AccountProfilePageState extends State<AccountProfilePage> {
             //         width: Get.width,
             //         height: 30,
             //         alignment: Alignment.centerLeft,
-            //         child: Text('desc',style: TextStyle(color: AppColor.themeColor),),
+            //         child: Text('desc', ),
             //         color: HexColor('#EDF2F9'),
             //       ),
             //       Container(
@@ -315,7 +321,6 @@ class _AccountProfilePageState extends State<AccountProfilePage> {
             //     ],
             //   ),
             // ),
-
           ],
         ),
       )

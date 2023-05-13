@@ -2,8 +2,12 @@ import 'package:get/get.dart';
 
 class I18nContent{
 
+
+  /// bottoast 提示框
+  static const String updateSuccessfully = 'Update successfully';
+
   static const String appTitleLabel = 'FoodBuyer';
-  static const String notData = 'not Data';
+  static const String notData = 'Not data';
   static const String errorText = 'Please enter the correct information';
 
 
@@ -48,6 +52,8 @@ class I18nContent{
   static const String advertisementOptional   = 'Advertisement (Optional) ';
   static const String termsAndAgreement   = 'Terms and agreement  ';
   static const String sendRequest   = 'Send Request';
+  static const String registerSuccessful   = 'Register Successful';
+
   /// signup enterprise buyer
   static const String enterPriseBuyerLabel = ' Enterprise buyer';
   static const String businessRegistrationNumber = 'Business registration number';
@@ -82,6 +88,8 @@ class I18nContent{
   ///chat
   static const String addNewNotePad = 'Add New Notepad';
   static const String users = 'Users';
+  static const String chatRoom = 'Chat room';
+  static const String leftTheChatRoom = 'left the chat room';
 
 
 
@@ -95,6 +103,8 @@ class Messages extends Translations {
     //1-配置中文繁體
     'zh_CN':{
 
+      ///
+      I18nContent.updateSuccessfully:'更新成功',
       /// signup individual buyer
       ///
       I18nContent.individualBuyer:'個人買家',
@@ -150,6 +160,7 @@ class Messages extends Translations {
       /// 开始聊天
       I18nContent.beginChat:'開始聊天',
       I18nContent.addNewNotePad:'添加一個筆記,',
+      I18nContent.leftTheChatRoom:'離開了聊天室',
 
       /// setting.
       I18nContent.accountProfile:'個人資料',
@@ -158,6 +169,10 @@ class Messages extends Translations {
     },
     //2-配置英文
     'en_US':{
+      ///修改成功
+      I18nContent.updateSuccessfully:'Update Successfully',
+
+
       I18nContent.bottomBarHome:"Home",
       I18nContent.loginLabel:"Sign In",
       I18nContent.signupLabel:"Sign up",
@@ -204,7 +219,8 @@ class Messages extends Translations {
       ///Home
       I18nContent.beginChat:'Begin Chat',
       ///chat
-      I18nContent.addNewNotePad:'Add New Notepad'
+      I18nContent.addNewNotePad:'Add New Notepad',
+      I18nContent.leftTheChatRoom:'left the chatRoom'
 
 
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/ChatMessage.dart';
 import 'constants.dart';
+import 'package:voice_message_package/voice_message_package.dart';
 
 
 class VideoMessage extends StatelessWidget {
@@ -21,19 +22,20 @@ class VideoMessage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 child: Image.asset('images/Video_Place_Here.png'),
               ),
-              Container(
-                height: 25,
-                width: 25,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: kPrimaryColor,
-                ),
-                child: Icon(
-                  Icons.play_arrow,
-                  size: 16,
-                  color: Colors.white,
-                ),
-              ),
+
+              // Container(
+              //   height: 25,
+              //   width: 25,
+              //   decoration: const BoxDecoration(
+              //     shape: BoxShape.circle,
+              //     color: kPrimaryColor,
+              //   ),
+              //   child: Icon(
+              //     Icons.play_arrow,
+              //     size: 16,
+              //     color: Colors.white,
+              //   ),
+              // ),
             ],
           ),
         ));

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:food_buyer/common/colors.dart';
+import 'package:food_buyer/common/foodbuyer_colors.dart';
 import 'package:food_buyer/pages/login_modules/login_in_page.dart';
 import 'package:food_buyer/pages/login_modules/login_page.dart';
 import 'package:food_buyer/pages/mine_modules/sub_account_managerment_page.dart';
@@ -68,17 +69,18 @@ class _MenuPageState extends State<MenuPage> {
   }
   @override
   Widget build(BuildContext context) {
+
+    ThemeData baseColor = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: const Text('Settings'),
       ),
       body: ListView(
-        padding: EdgeInsets.only(top: 15),
+        padding: const EdgeInsets.only(top: 15),
         children: [
-
           GestureDetector(
             onTap: (){
-              Get.to(AccountProfilePage());
+              Get.to(const AccountProfilePage());
             },
             child: Container(
               padding: const EdgeInsets.only(left: 25,right: 25),
@@ -111,11 +113,11 @@ class _MenuPageState extends State<MenuPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('${profileModel?.data?.nickName}',style: TextStyle(
-                              fontSize: 18,fontWeight: FontWeight.w600
-                          ),),
+                          Text('${profileModel?.data?.nickName}',
+                            style: baseColor.textTheme.titleLarge,),
                           const SizedBox(height: 5,),
-                          Text('Hong Kong',style: TextStyle(color: AppColor.smallTextColor),),
+                          Text('Hong Kong',style:
+                          baseColor.textTheme.bodySmall!.copyWith(color: kDTCloudGray),),
                         ],
                       ),
                     ],
@@ -137,8 +139,9 @@ class _MenuPageState extends State<MenuPage> {
                   children: [
                     Image.asset('images/ic_accmanagerment.png',width: 35,height: 35,),
                     SizedBox(width: 10,),
-                    Text('Account management',style: TextStyle(color: AppColor.smallTextColor,
-                      fontSize: 17
+                    Text('Account management',style: baseColor.textTheme.titleLarge!.
+                    copyWith(
+                      color: kDTCloudGray
                     ),),
 
                   ],
@@ -165,8 +168,9 @@ class _MenuPageState extends State<MenuPage> {
                    children: [
                      Image.asset('images/ic_sup_acmanager.png',width: 35,height: 35,),
                      SizedBox(width: 10,),
-                     Text('Sub - Account management',style: TextStyle(color: AppColor.smallTextColor,
-                         fontSize: 17
+                     Text('Sub - Account management',style: baseColor.textTheme.titleLarge!.
+                     copyWith(
+                         color: kDTCloudGray
                      ),),
 
                    ],
@@ -210,8 +214,9 @@ class _MenuPageState extends State<MenuPage> {
                   children: [
                     Image.asset('images/ic_contactus.png',width: 35,height: 35,),
                     SizedBox(width: 10,),
-                    Text('Contact us',style: TextStyle(color: AppColor.smallTextColor,
-                        fontSize: 17
+                    Text('Contact us',style: baseColor.textTheme.titleLarge!.
+                    copyWith(
+                        color: kDTCloudGray
                     ),),
 
                   ],
@@ -221,7 +226,7 @@ class _MenuPageState extends State<MenuPage> {
             ),
           ),
 
-          const SizedBox(height: 15,),
+          const SizedBox(height: 1,),
           Container(
             padding: const EdgeInsets.only(left: 25,right: 25),
             height: 75,
@@ -234,8 +239,9 @@ class _MenuPageState extends State<MenuPage> {
                     Image.asset('images/ic_promotion.png',width: 35,height: 35,),
 
                     SizedBox(width: 10,),
-                    Text('Promotion notification',style: TextStyle(color: AppColor.smallTextColor,
-                        fontSize: 17
+                    Text('Promotion notification',style: baseColor.textTheme.titleLarge!.
+                    copyWith(
+                        color: kDTCloudGray
                     ),),
 
                   ],
@@ -257,8 +263,9 @@ class _MenuPageState extends State<MenuPage> {
                     Image.asset('images/ic_setting.png',width: 35,height: 35,),
 
                     SizedBox(width: 10,),
-                    Text('Preference setting',style: TextStyle(color: AppColor.smallTextColor,
-                        fontSize: 17
+                    Text('Preference setting',style: baseColor.textTheme.titleLarge!.
+                    copyWith(
+                        color: kDTCloudGray
                     ),),
 
                   ],
@@ -318,7 +325,7 @@ class _MenuPageState extends State<MenuPage> {
             child:  Container(
               alignment: Alignment.center,
               height: 65,
-              color: HexColor('#F1F1F1'),
+              color: kDTCloud50,
               child: Text('Log Out',style: TextStyle(color: AppColor.smallTextColor,
                   fontWeight: FontWeight.w500
               ),),

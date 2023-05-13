@@ -2,6 +2,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:food_buyer/common/foodbuyer_colors.dart';
 import 'package:food_buyer/common/style.dart';
 import 'package:food_buyer/pages/chat_modules/note_pad_model.dart';
 import 'package:food_buyer/services/address.dart';
@@ -20,7 +21,7 @@ class NotePadPage extends StatefulWidget {
   State<NotePadPage> createState() => _NotePadPageState();
 }
 
-class _NotePadPageState extends State<NotePadPage> {
+class _NotePadPageState extends State<NotePadPage> with AutomaticKeepAliveClientMixin{
 
   EasyRefreshController easyRefreshController =
   EasyRefreshController(
@@ -40,7 +41,7 @@ class _NotePadPageState extends State<NotePadPage> {
     if(page == 1){
       notePadArr.clear();
       notePadArr.addAll(notePadModel.data!.list!);
-      easyRefreshController.finishRefresh();
+      easyRefreshController.finishRefresh(IndicatorResult.success);
       easyRefreshController.resetFooter();
     }else if(notePadModel.data!.list!.isNotEmpty){
       notePadArr.addAll(notePadModel.data!.list!);
@@ -61,7 +62,7 @@ class _NotePadPageState extends State<NotePadPage> {
     var json = await DioManager().kkRequest(Address.notePaDelete,bodyParams:
     params);
     if(json['code']==200){
-      BotToast.showText(text: '刪除成功');
+      BotToast.showText(text: 'successfully delete');
     }else{
       BotToast.showText(text: json['msg']);
     }
@@ -94,36 +95,40 @@ class _NotePadPageState extends State<NotePadPage> {
               page++;
               requestDataWithNotPadList();
             },
-            child: notePadArr.isEmpty?NoDataPage():ListView.builder(padding:EdgeInsets.all(0),
-              itemBuilder: itemBuilder,itemCount: notePadArr.length,),)),
-            Container(
-            color: Colors.white,
-            height: 55,
-            child: Center(
-              child: MaterialButton(
-                onPressed: () {
-
-                },
-                color: AppColor.themeColor,
-                minWidth: Get.width - 80,
-                height: 45,
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.
-                    all(Radius.circular(22))),
-                child: Text(
-                  I18nContent.addNewNotePad,
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          )
+            child: notePadArr.isEmpty?const NoDataPage():
+            ListView.builder(padding:const EdgeInsets.all(0),
+              itemBuilder: itemBuilder,
+              itemCount: notePadArr.length,),)),
+          // Container(
+          //   color: Colors.white,
+          //   height: 55,
+          //   child: Center(
+          //     child: MaterialButton(
+          //       onPressed: () {
+          //
+          //       },
+          //       color: AppColor.themeColor,
+          //       minWidth: Get.width - 80,
+          //       height: 45,
+          //       shape: const RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.
+          //           all(Radius.circular(22))),
+          //       child: Text(
+          //         I18nContent.addNewNotePad,
+          //         style: TextStyle(
+          //           color: Colors.white,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );
   }
   Widget itemBuilder(BuildContext context,int index){
+
+    ThemeData baseColor = Theme.of(context);
     NotePadItem model = notePadArr[index];
 
     return SwipeActionCell(
@@ -142,13 +147,14 @@ class _NotePadPageState extends State<NotePadPage> {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(left: 35,right: 15,top: 15),
+            padding: const EdgeInsets.only(left: 35,right: 15,top: 15),
             // height: 50,
             color: Colors.white,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                model.type==1?Text('${model.msg}',style: size18BlackW700,):
+                model.type==1?Text('${model.msg}',style: baseColor.textTheme.
+                  titleLarge,):
                 model.type==2? CachedNetworkImage(imageUrl: '${Address.homeHost}'
                     '${Address.storage}/${model.msg}'):
                 GestureDetector(
@@ -156,38 +162,40 @@ class _NotePadPageState extends State<NotePadPage> {
                     await launch('${Address.homeHost}/storage/${model.msg}');
 
                   },
-                  child:  Text('附件：${model.file_name}',style: TextStyle(
-                      fontSize: 18,color: AppColor.themeColor,
-                      fontWeight: FontWeight.w600
-                  ),),
+                  child:  Text('附件：${model.file_name}',style:baseColor.textTheme
+                    .titleLarge,),
                 ),
 
-                SizedBox(height: 10,),
-                Container(
-                  child:  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('${model.type==1?'文本':model.type==2?'圖片':
-                      '附件'}',
-                        style: TextStyle(fontSize: 12,
-                            color: AppColor.smallTextColor),),
-                      Text('${model.msgTime}',style: TextStyle(fontSize: 12,
-                          color: AppColor.smallTextColor),)
-
-                    ],
-                  ),
+                const  SizedBox(height: 10,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(model.type==1?'文本':
+                    model.type==2?'圖片': '附件',
+                      style: baseColor.textTheme.bodySmall!.copyWith(
+                        color: kDTCloudGray
+                      ),),
+                    Text('${model.msgTime}',
+                      style: baseColor.textTheme.bodySmall!.copyWith(
+                          color: kDTCloudGray
+                      ),)
+                  ],
                 ),
-                SizedBox(height: 15,),
+                const SizedBox(height: 15,),
               ],
             ),
           ),
           Container(
             height: 0.5,
-            color: AppColor.lineColor,
+            color: kDTCloudGray,
           )
         ],
       ),
     );
 
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

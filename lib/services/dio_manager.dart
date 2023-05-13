@@ -3,6 +3,10 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:food_buyer/pages/login_modules/login_in_page.dart';
+import 'package:food_buyer/pages/login_modules/login_page.dart';
+import 'package:food_buyer/utils/printer.dart';
+import 'package:logger/logger.dart';
 import '../utils/persisten_storage.dart';
 import 'address.dart';
 import 'package:get/get.dart';
@@ -64,8 +68,8 @@ class DioManager{
           options: options, queryParameters: params, data: bodyParams);
 
       var s = jsonEncode(json.data);
-      print('请求结果===== result.data ======= ${s}');
-
+      // print('请求结果===== result.data ======= ${s}');
+      LogUtil.d('请求结果===== result.data ======= ${s}');
       if(json.data['code']==400){
         BotToast.showText(text: '${json.data['message']}');
         // Get.offNamed(AppRoutes.login);
@@ -76,7 +80,7 @@ class DioManager{
       print('请求结果===== ${error}');
 
       if(error.response?.statusCode==302){
-
+        Get.offAll(LoginPage());
       }else if(error.response?.statusCode ==413){
         BotToast.showText(text: '上傳文件超出指定空間，請使用1MB或以下的相片');
       }

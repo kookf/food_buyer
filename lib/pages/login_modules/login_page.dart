@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:food_buyer/common/colors.dart';
+import 'package:food_buyer/common/foodbuyer_colors.dart';
 import 'package:food_buyer/lang/message.dart';
 import 'package:food_buyer/pages/login_modules/register_modules/select_register_type_page.dart';
 import 'package:food_buyer/pages/login_modules/select_language_page.dart';
 import 'package:food_buyer/pages/login_modules/verification_code_page.dart';
 import 'package:food_buyer/utils/hexcolor.dart';
 import 'package:get/get.dart';
-
 import 'create_new_account_page.dart';
 import 'login_in_page.dart';
 
@@ -15,10 +15,12 @@ class LoginPage extends GetView{
 
   @override
   Widget build(BuildContext context) {
+    final baseColor = Theme.of(context);
+
     // TODO: implement build
     return Scaffold(
       body: ListView(
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         children: [
           Container(
             margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
@@ -27,7 +29,7 @@ class LoginPage extends GetView{
             color: Colors.white,
             alignment: Alignment.centerRight,
             child: IconButton(onPressed: () {
-              Get.to(SelectLanguagePage());
+              Get.to(const SelectLanguagePage());
             }, icon: Image.asset('images/ic_language.png'),),
           ),
           Container(
@@ -39,55 +41,61 @@ class LoginPage extends GetView{
                 'images/ic_login_image.png',cacheHeight: 400,
             cacheWidth: 400,),
           ),
-          SizedBox(height: 15,),
+          const SizedBox(height: 15,),
           Center(child:    RichText(text: TextSpan(
               children: [
-                const TextSpan(text: 'Welcome to ',style:
-                TextStyle(fontWeight: FontWeight.w700,fontSize: 25,color: Colors.black)),
-                TextSpan(text: 'FoodBuyer ',
-                    style: TextStyle(fontWeight: FontWeight.w700,fontSize: 25,color: AppColor.themeColor)),
+                TextSpan(text: 'Welcome to ',style:
+                Theme.of(context).textTheme.headlineSmall!.copyWith(
+                  color: Colors.black
+                )),
+                TextSpan(text: 'FoodBuyer ',style: Theme.of(context).textTheme
+                .headlineSmall),
               ]
           )),),
           Container(
-            margin: EdgeInsets.only(left: 35,right: 35,top: 25),
-            child: Text('''Connect your business with potential Food & Beverage buyer orsuppliers for more lucrativebusiness opportunities
-          ''',style: TextStyle(fontSize: 18,color: Colors.grey,fontWeight: FontWeight.w600),
+            margin: const EdgeInsets.only(left: 35,right: 35,top: 25),
+            child: Text('''Connect your business with potential Food & Beverage buyer orsuppliers for more business opportunities
+          ''',style: Theme.of(context).textTheme.titleLarge!.copyWith(
+              color: kDTCloudGray
+            ),
               textAlign: TextAlign.center,),
           ),
-          SizedBox(height: 55,),
+          const SizedBox(height: 55,),
           Container(
-            padding: EdgeInsets.only(left: 15,right: 15),
+            padding: const EdgeInsets.only(left: 15,right: 15),
             child:  MaterialButton(onPressed: (){
 
-              Get.to(LoginInPage());
+              Get.to(const LoginInPage());
 
-            },child: Text(I18nContent.loginLabel.tr,style: TextStyle(color: Colors.white,fontSize: 18),)
-              ,color: AppColor.themeColor,minWidth: Get.width,height: 55,
+            },color: AppColor.themeColor,height: 55,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(25)),
-              ),),
+              ),child: Text(I18nContent.loginLabel.tr,
+              style: baseColor.textTheme.titleLarge!.copyWith(color: Colors.white),)
+              ,),
           ),
-          SizedBox(height: 10,),
+          const SizedBox(height: 10,),
           Container(
-            padding: EdgeInsets.only(left: 15,right: 15),
-            child:     MaterialButton(onPressed: (){
+            padding: const EdgeInsets.only(left: 15,right: 15),
+            child:MaterialButton(onPressed: (){
               // Get.to(CreateNewAccountPage());
 
               // Get.to(VerificationCodePage());
-              Get.to(SelectRegisterTypePage());
+              Get.to(const SelectRegisterTypePage());
 
-            },child: Text(I18nContent.createNewAccLabel.tr,style: TextStyle(color: AppColor.themeColor,fontSize: 18),)
-              ,color: HexColor('#EDF2F9'),minWidth: Get.width,height: 55,
-              shape:  RoundedRectangleBorder(
+            },color: kDTCloud50,minWidth: Get.width,height: 55,
+              shape:  const RoundedRectangleBorder(
                 //边框颜色
                 side: BorderSide(
-                  color: AppColor.themeColor,
+                  color: kDTCloud900,
                   width: 1,
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(25)),
-              ),),
+              ),child: Text(I18nContent.createNewAccLabel.tr,
+              style: baseColor.textTheme.titleLarge,)
+              ,),
           ),
-          SizedBox(height: 10,),
+          const SizedBox(height: 10,),
 
 
         ],

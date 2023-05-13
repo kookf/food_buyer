@@ -1,10 +1,14 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:food_buyer/pages/login_modules/register_modules/register_complete_page.dart';
 import 'package:image_pickers/image_pickers.dart';
 
 import '../../../common/colors.dart';
 import '../../../common/style.dart';
 import '../../../lang/message.dart';
+import '../../../services/address.dart';
+import '../../../services/dio_manager.dart';
 import '../../../utils/hexcolor.dart';
 import 'package:get/get.dart';
 
@@ -55,7 +59,45 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
       });
     }
 
-  /// 注册一个个人账号
+  /// 注册一个公司账号
+  bool verify =false;
+
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController companyNameController = TextEditingController();
+  TextEditingController companyNameEnController = TextEditingController();
+  TextEditingController contactNameController = TextEditingController();
+  TextEditingController contactNumberController = TextEditingController();
+  TextEditingController contactEmailController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmedPasswordController = TextEditingController();
+
+  requestDataWithCreateIndividual()async{
+    var params = {
+      'nick_name':userNameController.text,
+      'company_name':companyNameController.text,
+      'company_name_en':companyNameEnController.text,
+      'contact_name':contactNameController.text,
+      'contact_number':contactNumberController.text,
+      'contact_email':contactEmailController.text,
+      'location':locationController.text,
+      'password':passwordController.text,
+      'confirmed_password':confirmedPasswordController.text,
+    };
+    var json = await DioManager().kkRequest(Address.userCreateCompany,
+        bodyParams: params);
+    if(json['code'] == 200){
+      BotToast.showText(text: I18nContent.registerSuccessful);
+      Get.back();
+      Get.to(RegisterCompletePage());
+
+
+
+    }else{
+      BotToast.showText(text:json['message']);
+    }
+
+  }
 
 
   @override

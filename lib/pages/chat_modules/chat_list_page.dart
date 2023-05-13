@@ -3,6 +3,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:food_buyer/common/foodbuyer_colors.dart';
 import 'package:food_buyer/lang/message.dart';
 import 'package:food_buyer/pages/chat_modules/chat_list_model.dart';
 import 'package:food_buyer/pages/chat_modules/models/ChatMessage.dart';
@@ -28,7 +29,7 @@ class _ChatListPageState extends State<ChatListPage>
     with SingleTickerProviderStateMixin {
 
   EasyRefreshController easyRefreshController = EasyRefreshController(
-    controlFinishRefresh: false,
+    controlFinishRefresh: true,
   );
   late TabController tabController;
 
@@ -44,10 +45,12 @@ class _ChatListPageState extends State<ChatListPage>
     var params = {
       'page':page,
     };
+    easyRefreshController.finishRefresh(IndicatorResult.success);
     var json = await DioManager().kkRequest(Address.chatList,bodyParams: params);
     ChatListModel model = ChatListModel.fromJson(json);
     chatList.clear();
     chatList.addAll(model.data!);
+
     // easyRefreshController.finishRefresh(IndicatorResult.success);
     setState(() {
 
@@ -68,30 +71,36 @@ class _ChatListPageState extends State<ChatListPage>
   }
 
   StreamSubscription? eventBusFn;
+
   void initOnLister(){
     eventBusFn = EventBusUtil.listen((event) {
       //  event为 event.obj 即为 eventBus.dart 文件中定义的 EventFn 类中监听的数据
-      print('chat list event.obj hh ===== $event');
-
-      chatMessage = event[0];
-
-      for(int i = 0;i<chatList.length;i++){
-
-        ChatListData model = chatList[i];
-        var roomKey = model.roomKey;
-        print('${roomKey}  ===  ${chatMessage!.room_key}');
-        if(roomKey == chatMessage!.room_key){
-          model.chatlastMsg = chatMessage!.text;
-
-        }else {
-          // model.chatlastMsg = '暂无最新消息';
-        }
+      print('chat list  ===== $event');
+      if(event == 'chatListRefresh'){
+        requestDataWithChatList();
+        return;
       }
+        int type = event['type'];
+
+        if(type == 10){
+          requestDataWithChatList();
+        }
+
+      chatMessage = event['arr'][0];
+        for(int i = 0;i<chatList.length;i++){
+          ChatListData model = chatList[i];
+          var roomKey = model.roomKey;
+          print('${roomKey}  ===  ${chatMessage!.room_key}');
+          if(roomKey == chatMessage!.room_key){
+            model.chatlastMsg = '您有一條新的消息';
+          }else {
+            // model.chatlastMsg = '暂无最新消息';
+          }
+        }
       setState(() {
 
       });
     });
-
     // eventBusFn = eventBus.on<EventFn>().listen((event) {
     //   //  event为 event.obj 即为 eventBus.dart 文件中定义的 EventFn 类中监听的数据
     //   print('chat list event.obj hh ===== ${event.obj}');
@@ -116,7 +125,6 @@ class _ChatListPageState extends State<ChatListPage>
     // });
   }
 
-
   ChatMessage? chatMessage;
   @override
   void initState() {
@@ -124,7 +132,6 @@ class _ChatListPageState extends State<ChatListPage>
     super.initState();
     requestDataWithChatList();
     initOnLister();
-
 
     tabController = TabController(length: _tabs.length, vsync: this);
   }
@@ -153,7 +160,8 @@ class _ChatListPageState extends State<ChatListPage>
               child: Text(
                 I18nContent.addChat.tr,
                 style: const TextStyle(color: Colors.black),
-              ))
+              )),
+
         ],
       ),
       body: Column(
@@ -187,9 +195,6 @@ class _ChatListPageState extends State<ChatListPage>
                         border: InputBorder.none,
                         isCollapsed: true,
                         hintText: I18nContent.searchChat.tr,
-                        hintStyle:
-                            const TextStyle(fontSize: 16,
-                                color: Colors.black),
                       ),
                     ))
                   ],
@@ -243,12 +248,14 @@ class _ChatListPageState extends State<ChatListPage>
 
   SliverChildBuilderDelegate _mySliverChildBuildList() {
     return SliverChildBuilderDelegate((context, index) {
-
+      ThemeData baseColor = Theme.of(context);
       ChatListData model1 = chatList[index];
       return GestureDetector(
-        onTap: () {
-          Get.to(ChatPage(model1.roomKey!,model1));
-          // Get.to(Cc());
+        onTap: () async{
+        var data =  await Get.to(ChatPage(model1.roomKey!,model1));
+        if(data == 'chatListRefresh'){
+          requestDataWithChatList();
+        }
         },
         child: Column(
           children: [
@@ -264,7 +271,7 @@ class _ChatListPageState extends State<ChatListPage>
                      width: 50,
                     child: GridView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context,index){
                       return Container(
                         decoration: BoxDecoration(
@@ -281,55 +288,59 @@ class _ChatListPageState extends State<ChatListPage>
                           errorWidget: (context, url, error) => const Icon(Icons.error),
                         ),
                       );
-                    },itemCount: model1.userList!.length,
+                    },itemCount: model1.userList!.length>4?
+                    4:model1.userList!.length,
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          crossAxisSpacing: 1,
-                          mainAxisSpacing: 1,
+                          crossAxisSpacing: 2,
+                          mainAxisSpacing: 2,
                           childAspectRatio: 1
                       ),
                     ),
                   ),
-                  SizedBox(
+                 const SizedBox(
                     width: 15,
                   ),
                   Expanded(
                       child: Container(
-
-                    padding: const EdgeInsets.only(right: 25),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        model1.roomName==''?Text(
-                          '${I18nContent.users.tr}：${model1.userList!.map((e) => e.nickName)}',
-                          style: size18BlackW700,
+                        padding: const EdgeInsets.only(right: 25),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            model1.roomName==''?Text(
+                              '${I18nContent.users.tr}'
+                              '：${model1.userList!.map((e) => e.nickName)}',
+                          style:baseColor.textTheme.titleLarge!.copyWith(
+                            color: Colors.black
+                          ),
                         ):Text(
                           '${model1.roomName}',
-                          style: size18BlackW700,
+                          style: baseColor.textTheme.titleLarge!.copyWith(
+                            color: Colors.black
+                          ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
-                        Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                '${model1.chatlastMsg}',
-                                style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 11,fontWeight: FontWeight.w500
-                                ),maxLines: 1,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '${model1.chatlastMsg}',
+                              style: const TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 11,fontWeight: FontWeight.w500
+                              ),maxLines: 1,
+                            ),
+                            Text(
+                              model1.chat_last_at==null?'':
+                              '${model1.chat_last_at}',
+                              style: baseColor.textTheme.bodySmall!.copyWith(
+                                color: kDTCloudGray
                               ),
-                              Text(
-                                model1.chat_last_at==null?'':
-                                '${model1.chat_last_at}',
-                                style: TextStyle(
-                                    fontSize: 11, color: AppColor.smallTextColor),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         )
                       ],
                     ),
