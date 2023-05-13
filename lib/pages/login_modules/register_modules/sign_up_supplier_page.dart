@@ -438,6 +438,14 @@ class _SignUpSupplierPageState extends State<SignUpSupplierPage> {
                   verify==false?SizedBox.shrink():
                   passwordController.text.isEmpty?
                   errorText():SizedBox.shrink(),
+
+                  Container(
+                    margin: EdgeInsets.only(left: 35, top: 25),
+                    child: Text(
+                      I18nContent.pleaseEnterYourPassword.tr,
+                      style: size18BlackW700,
+                    ),
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
@@ -458,70 +466,73 @@ class _SignUpSupplierPageState extends State<SignUpSupplierPage> {
                   verify==false?SizedBox.shrink():
                   confirmedPasswordController.text.isEmpty?
                   errorText():SizedBox.shrink(),
-
-                  Container(
-                    margin: EdgeInsets.only(left: 35, top: 25),
-                    child: Text(
-                      I18nContent.advertisementOptional.tr,
-                      style: size18BlackW700,
-                    ),
-                  ),
-                  Container(
-                    color: Colors.white,
-                    padding: EdgeInsets.only(left: 35,right: 0,top: 5),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        // Radio(value: 0, groupValue: 0, onChanged: (onChanged){
-                        //
-                        // }),
-                        Padding(padding: EdgeInsets.only(top: 3),child: Image.asset('images/ic_radio.png',width: 20,height: 20,),),
-                        SizedBox(width: 15,),
-                        Container(
-                          height: 55,
-                          width: Get.width - 100,
-                          child:Text('Lorem ipsum dolor sit amet consectetur. '
-                              'Tristique urna feugiat feugiat diam nascetur vestibulum eget bibendum. ',style: TextStyle(
-                            fontSize: 14,color: AppColor.smallTextColor,
-                          ),maxLines: 3,),
-                        )
-
-                      ],
-                    ),
+                  const SizedBox(
+                    height: 50,
                   ),
 
-                  Container(
-                    margin: EdgeInsets.only(left: 35, top: 25),
-                    child: Text(
-                      'Terms and agreement  ',
-                      style: size18BlackW700,
-                    ),
-                  ),
-                  Container(
-                    color: Colors.white,
-                    padding: EdgeInsets.only(left: 35,right: 0,top: 5),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        // Radio(value: 0, groupValue: 0, onChanged: (onChanged){
-                        //
-                        // }),
-                        Padding(padding: EdgeInsets.only(top: 3),child: Image.asset('images/ic_radio.png',width: 20,height: 20,),),
-                        SizedBox(width: 15,),
-                        Container(
-                          height: 55,
-                          width: Get.width - 100,
-                          child:Text('Lorem ipsum dolor sit amet consectetur. '
-                              'Tristique urna feugiat feugiat diam nascetur vestibulum eget bibendum. ',style: TextStyle(
-                            fontSize: 14,color: AppColor.smallTextColor,
-                          ),maxLines: 3,),
-                        )
-
-                      ],
-                    ),
-                  )
+                  // Container(
+                  //   margin: EdgeInsets.only(left: 35, top: 25),
+                  //   child: Text(
+                  //     I18nContent.advertisementOptional.tr,
+                  //     style: size18BlackW700,
+                  //   ),
+                  // ),
+                  // Container(
+                  //   color: Colors.white,
+                  //   padding: EdgeInsets.only(left: 35,right: 0,top: 5),
+                  //   child: Row(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     children: [
+                  //       // Radio(value: 0, groupValue: 0, onChanged: (onChanged){
+                  //       //
+                  //       // }),
+                  //       Padding(padding: EdgeInsets.only(top: 3),child: Image.asset('images/ic_radio.png',width: 20,height: 20,),),
+                  //       SizedBox(width: 15,),
+                  //       Container(
+                  //         height: 55,
+                  //         width: Get.width - 100,
+                  //         child:Text('Lorem ipsum dolor sit amet consectetur. '
+                  //             'Tristique urna feugiat feugiat diam nascetur vestibulum eget bibendum. ',style: TextStyle(
+                  //           fontSize: 14,color: AppColor.smallTextColor,
+                  //         ),maxLines: 3,),
+                  //       )
+                  //
+                  //     ],
+                  //   ),
+                  // ),
+                  //
+                  // Container(
+                  //   margin: EdgeInsets.only(left: 35, top: 25),
+                  //   child: Text(
+                  //     'Terms and agreement  ',
+                  //     style: size18BlackW700,
+                  //   ),
+                  // ),
+                  // Container(
+                  //   color: Colors.white,
+                  //   padding: EdgeInsets.only(left: 35,right: 0,top: 5),
+                  //   child: Row(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     children: [
+                  //       // Radio(value: 0, groupValue: 0, onChanged: (onChanged){
+                  //       //
+                  //       // }),
+                  //       Padding(padding: EdgeInsets.only(top: 3),child: Image.asset('images/ic_radio.png',width: 20,height: 20,),),
+                  //       SizedBox(width: 15,),
+                  //       Container(
+                  //         height: 55,
+                  //         width: Get.width - 100,
+                  //         child:Text('Lorem ipsum dolor sit amet consectetur. '
+                  //             'Tristique urna feugiat feugiat diam nascetur vestibulum eget bibendum. ',style: TextStyle(
+                  //           fontSize: 14,color: AppColor.smallTextColor,
+                  //         ),maxLines: 3,),
+                  //       )
+                  //
+                  //     ],
+                  //   ),
+                  // )
                 ],
               ),
             ),

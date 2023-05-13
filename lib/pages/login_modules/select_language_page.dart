@@ -5,6 +5,7 @@ import 'package:food_buyer/utils/persisten_storage.dart';
 import 'package:get/get.dart';
 
 class SelectLanguagePage extends StatefulWidget {
+
   const SelectLanguagePage({Key? key}) : super(key: key);
 
   @override

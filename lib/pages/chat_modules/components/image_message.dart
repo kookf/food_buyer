@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_buyer/services/address.dart';
 import 'package:image_pickers/image_pickers.dart';
+import '../../../common/colors.dart';
 import '../../../services/dio_manager.dart';
 import '../models/ChatMessage.dart';
 import 'constants.dart';
@@ -29,7 +30,7 @@ class ImageMessage extends StatelessWidget {
     var json = await DioManager().kkRequest(Address.notePadAdd,
         bodyParams: params);
     if(json['code'] == 200){
-      BotToast.showText(text: json['message']);
+      BotToast.showText(text: '添加成功');
     }else{
       BotToast.showText(text: json['message']);
     }
@@ -71,41 +72,53 @@ class ImageMessage extends StatelessWidget {
           ));
         }
       },
-      child: Container(
-        width: 200,
-        padding: const EdgeInsets.
-        symmetric(horizontal: kDefaultPadding * 0.75,
-            vertical: kDefaultPadding / 2),
-        decoration: BoxDecoration(
-            color: kPrimaryColor.withOpacity(message.isSender ? 1 : 0.08),
-            borderRadius: BorderRadius.circular(5)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CachedNetworkImage(
-                placeholder: (context, url) => const Center(
-                  child: CircularProgressIndicator(),
+      child: Column(
+        children: [
+          message.isSender==true?SizedBox():Container(
+            width: Get.width/2-5,
+            // color: Colors.red,
+            child: Text('${message.nick_name}',style: TextStyle(
+                fontSize: 11,color: AppColor.smallTextColor
+            ),),
+          ),
+          SizedBox(height: 5,),
+          Container(
+            width: 200,
+            padding: const EdgeInsets.
+            symmetric(horizontal: kDefaultPadding * 0.75,
+                vertical: kDefaultPadding / 2),
+            decoration: BoxDecoration(
+                color: kPrimaryColor.withOpacity(message.isSender ? 1 : 0.08),
+                borderRadius: BorderRadius.circular(5)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CachedNetworkImage(
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                    fit: BoxFit.cover,
+                    imageUrl: '${Address.homeHost}/storage/${message.fileImagePath}'
                 ),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-                fit: BoxFit.cover,
-                imageUrl: '${Address.homeHost}/storage/${message.fileImagePath}'
+                // Image.network(message.fileImagePath!),
+                // Text(
+                //   message.text,
+                //   style: TextStyle(color: message.isSender ?
+                //   Colors.white : Theme.of(context).textTheme.bodyText1?.color),
+                // ),
+                Container(
+                  alignment: message.isSender?Alignment.centerRight:Alignment.centerRight,
+                  width: 200,
+                  // color: Colors.red,
+                  padding: EdgeInsets.only(top: 5),
+                  child: Text(message.time,style: TextStyle(color: message.isSender?
+                  Colors.white:Colors.grey,fontSize: 12),),
+                )
+              ],
             ),
-            // Image.network(message.fileImagePath!),
-            // Text(
-            //   message.text,
-            //   style: TextStyle(color: message.isSender ?
-            //   Colors.white : Theme.of(context).textTheme.bodyText1?.color),
-            // ),
-            Container(
-              alignment: message.isSender?Alignment.centerRight:Alignment.centerRight,
-              width: 200,
-              // color: Colors.red,
-              padding: EdgeInsets.only(top: 5),
-              child: Text(message.time,style: TextStyle(color: message.isSender?
-              Colors.white:Colors.grey,fontSize: 12),),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

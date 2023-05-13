@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:food_buyer/common/colors.dart';
 import 'package:food_buyer/pages/chat_modules/components/file_message.dart';
+import 'package:food_buyer/pages/chat_modules/components/leave_message.dart';
 import 'package:food_buyer/pages/chat_modules/components/text_message.dart';
 import 'package:food_buyer/services/address.dart';
 
@@ -21,6 +23,7 @@ class Message extends StatelessWidget {
   final ChatMessage message;
   @override
   Widget build(BuildContext context) {
+    print(message.type);
     Widget messageContaint(ChatMessage message) {
       switch (message.messageType) {
         case ChatMessageType.text:
@@ -33,19 +36,49 @@ class Message extends StatelessWidget {
           return VideoMessage(message: message);
         case ChatMessageType.file:
           return FileMessage(message: message);
+        case ChatMessageType.leaveText:
+          return LeaveMessage(message: message);
         default:
           return const SizedBox();
       }
     }
-    return Padding(
-      padding: const EdgeInsets.only(top: kDefaultPadding),
-      child: Row(
-        mainAxisAlignment: message.isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: [
-          if (!message.isSender)
-            ...[
-              // MessageStatusDot(status: message.messageStatus),
-              Container(
+    return Container(
+      margin: EdgeInsets.only(top: 0),
+      // color: Colors.yellowAccent,
+      child:  Padding(
+        padding: const EdgeInsets.only(top: kDefaultPadding),
+        child: Row(
+
+          mainAxisAlignment: message.type==4?MainAxisAlignment.center:
+          message.isSender ?
+          MainAxisAlignment.end :
+          MainAxisAlignment.start,
+          children: [
+            if (!message.isSender)
+              ...[
+                // MessageStatusDot(status: message.messageStatus),
+              message.type==4?SizedBox():  Container(
+                  margin: EdgeInsets.only(left: 2),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.
+                      all(Radius.circular(15))
+                  ),
+                  clipBehavior: Clip.hardEdge,
+                  child: CachedNetworkImage(
+                    width: 30,
+                    height: 30,
+                    imageUrl: '${Address.homeHost}'
+                        '${Address.storage}/${message.avatar}',
+
+                  ),
+                ),
+                const SizedBox(
+                  width: kDefaultPadding / 2,
+                )
+              ],
+            messageContaint(message),
+            if (message.isSender)
+              message.type==4?SizedBox():  Container(
                 margin: EdgeInsets.only(left: 2),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.
@@ -59,30 +92,10 @@ class Message extends StatelessWidget {
                       '${Address.storage}/${message.avatar}',
 
                 ),
-              ),
-            const SizedBox(
-              width: kDefaultPadding / 2,
-            )
-          ],
-          messageContaint(message),
-          if (message.isSender)
-            Container(
-              margin: EdgeInsets.only(left: 2),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.
-                all(Radius.circular(15))
-              ),
-              clipBehavior: Clip.hardEdge,
-              child: CachedNetworkImage(
-                width: 30,
-                height: 30,
-                imageUrl: '${Address.homeHost}'
-                    '${Address.storage}/${message.avatar}',
-
-              ),
-            )
+              )
             // MessageStatusDot(status: message.messageStatus)
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:food_buyer/lang/message.dart';
 import 'package:food_buyer/pages/chat_modules/models/message_model.dart';
 import 'package:food_buyer/services/address.dart';
 import 'package:food_buyer/services/dio_manager.dart';
@@ -16,6 +17,7 @@ import '../../../utils/event_utils.dart';
 import '../../../utils/websocket_kk.dart';
 import '../chat_list_model.dart';
 import '../models/ChatMessage.dart';
+import 'chat_information_modules/chat_information_page.dart';
 import 'chat_input_fields.dart';
 import 'constants.dart';
 import 'message.dart';
@@ -23,7 +25,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:get/route_manager.dart';
 import 'dart:io';
-
+import 'package:get/utils.dart';
 class ChatPage extends StatefulWidget {
 
   String roomKey;
@@ -44,6 +46,8 @@ class _ChatPageState extends State<ChatPage> {
   final _listenable = IndicatorStateListenable();
   double? _viewportDimension;
 
+  bool isSpeak = false;
+
 
   TextEditingController messageController = TextEditingController();
   ScrollController _scrollController = ScrollController();
@@ -58,134 +62,7 @@ class _ChatPageState extends State<ChatPage> {
   var socket_status = 0;
   var userId;
 
-
-
   List<ChatMessage> ChatMessages = [];
-
-  // initWebSocket()async{
-  //
-  //   userId = await PersistentStorage().getStorage('id');
-  //   var socketKey = await PersistentStorage().getStorage('socket_key');
-  //   WebSocketSingleton().connect(Address.webSocket);
-  //   var params = {
-  //     'user_id':userId,
-  //     'key':socketKey,
-  //     'type':0,
-  //   };
-  //   var json = jsonEncode(params);
-  //   print(json);
-  //   WebSocketSingleton().send(json);
-  //
-  //   WebSocketSingleton().onMessage.listen((event) {
-  //     var json = jsonDecode(event);
-  //     print('服务端返回的json===${json}');
-  //     bool isSender;
-  //     if(json['user_id'] == userId){
-  //       isSender = true;
-  //     }else{
-  //       isSender = false;
-  //     }
-  //
-  //     switch (json['type']){
-  //       case -1:
-  //         // print('心条type-1');
-  //         break;
-  //       case 0:
-  //         if(json['code'] == 200){
-  //           BotToast.showText(text: 'webSocket连接成功');
-  //           if(socket_status==0){
-  //             socket_status = 1;
-  //           }
-  //         }else{
-  //           BotToast.showText(text: 'webSocket连接失败');
-  //         }
-  //         break;
-  //       case 1:
-  //         String time = json['time'];
-  //         mesArr.insert(0,ChatMessage(
-  //             text: json['msg'],
-  //             time: time.substring(10),
-  //             messageType: ChatMessageType.text,
-  //             messageStatus: MessageStatus.viewed,
-  //             msgId: json['msg_id'],
-  //             userId: json['user_id'],
-  //             isSender: isSender));
-  //
-  //         print('listtext =========${mesArr.length}');
-  //         break;
-  //       case 2:
-  //       String time = json['time'];
-  //       // insertDataMessage(ChatMessage(
-  //       //     // text: json['msg'],
-  //       //     time: time.substring(10),
-  //       //     messageType: ChatMessageType.image,
-  //       //     messageStatus: MessageStatus.viewed,
-  //       //     fileImagePath: json['msg'],
-  //       //     msgId: json['msg_id'],
-  //       //     userId: json['user_id'],
-  //       //     isSender: isSender));
-  //       mesArr.insert(0,ChatMessage(
-  //           // text: json['msg'],
-  //           time: time.substring(10),
-  //           messageType: ChatMessageType.image,
-  //           messageStatus: MessageStatus.viewed,
-  //           fileImagePath: '${json['msg']}',
-  //           msgId: json['msg_id'],
-  //           userId: json['user_id'],
-  //           isSender: isSender));
-  //       print('mesArr =========${mesArr}');
-  //         break;
-  //       case 3:
-  //         String time = json['time'];
-  //         // insertDataMessage(ChatMessage(
-  //         //     // text: json['msg'],
-  //         //     time: time.substring(10),
-  //         //     messageType: ChatMessageType.image,
-  //         //     messageStatus: MessageStatus.viewed,
-  //         //     fileImagePath: json['msg'],
-  //         //     msgId: json['msg_id'],
-  //         //     userId: json['user_id'],
-  //         //     isSender: isSender));
-  //         mesArr.insert(0,ChatMessage(
-  //           // text: json['msg'],
-  //             time: time.substring(10),
-  //             messageType: ChatMessageType.file,
-  //             messageStatus: MessageStatus.viewed,
-  //             filePath: '${json['msg']}',
-  //             msgId: json['msg_id'],
-  //             userId: json['user_id'],
-  //             fileName: json['file_name'],
-  //             isSender: isSender));
-  //         print('mesArr =========${mesArr}');
-  //
-  //         break;
-  //     }
-  //     setState(() {
-  //
-  //     });
-  //    });
-  // }
-
-
-  // List<ChatMessage> va = [];
-  //
-  // insertDataMessage(ChatMessage model)async{
-  //   va.add(model);
-  //   await PersistentStorage().setStorage('chatList', va);
-  //   print(await PersistentStorage().getStorage('chatList'));
-  // }
-
-
-  // initMessage()async{
-  //   List s = await PersistentStorage().getStorage('chatList');
-  //   for(int i =0;i<s.length;i++){
-  //     ChatMessages.add(s[i]);
-  //   }
-  //   print('init ChatMessages==${ChatMessages}');
-  //   setState(() {
-  //
-  //   });
-  // }
 
 
   List <ChatMessage> mesArr = [];
@@ -215,20 +92,27 @@ class _ChatPageState extends State<ChatPage> {
         messageType = ChatMessageType.image;
       }else if(messageModel.data!.list![i].type==3){
         messageType = ChatMessageType.file;
+      }else if(messageModel.data!.list![i].type==4){
+        messageType = ChatMessageType.leaveText;
+      }else if(messageModel.data!.list![i].type==5){
+        messageType = ChatMessageType.audio;
       }
 
+      print(messageModel.data!.list![i].type);
       mesArr.add(ChatMessage(
           text: '${messageModel.data!.list![i].msg}',
-          time: '${messageModel.data!.list![i].createdAt!.substring(10)}',
+          time: '${messageModel.data!.list![i].createdAt!}',
           messageType: messageType!,
           messageStatus: MessageStatus.viewed,
           isSender: isSender,
+          nick_name: '${messageModel.data!.list![i].nickName}',
           fileImagePath: '${messageModel.data!.list![i].msg}',
           filePath: '${messageModel.data!.list![i].msg}',
           fileName: messageModel.data!.list![i].file_name,
            avatar: messageModel.data!.list![i].avatar,
         msgId:messageModel.data!.list![i].msgId ,
         userId:messageModel.data!.list![i].userId ,
+        type: messageModel.data!.list![i].type,
       ));
     }
 
@@ -263,11 +147,56 @@ class _ChatPageState extends State<ChatPage> {
     //     });
     //   });
   }
+  int userLength = -1;
   listerData(){
     eventBusFn = EventBusUtil.listen((event) {
-      print('event.obj hh ===== ${event}');
-      mesArr.insertAll(0,event);
-      print(mesArr.length);
+
+      print('+++++++++++++++++++${event}');
+
+      if(event is String){
+        return;
+      }
+        var type = event['type'];
+        if(event['type'] == 10){
+          List userList = event['userList'];
+          userLength = userList.length;
+          setState(() {
+
+          });
+
+          return;
+        }
+      if(type == 4){
+        // List userList = event['userList'];
+        // userLength = userList.length;
+        print('event.obj type 4 ===== ${event}');
+        userLength = event['user_nums'];
+        mesArr.insertAll(0,event['arr']);
+        print(mesArr.length);
+        EventBusUtil.fire('chatListRefresh');
+        setState(() {
+
+        });
+        return;
+      }
+      if(type == 1){
+        print('event.obj hh ===== ${event}');
+        mesArr.insertAll(0,event['arr']);
+        print(mesArr.length);
+      }else if(type ==2){
+        print('event.obj hh ===== ${event}');
+        mesArr.insertAll(0,event['arr']);
+        print(mesArr.length);
+      }else if(type ==3){
+        print('event.obj hh ===== ${event}');
+        mesArr.insertAll(0,event['arr']);
+        print(mesArr.length);
+      }else if(type==5){
+        print('event.obj hh ===== ${event}');
+        mesArr.insertAll(0,event['arr']);
+        print(mesArr.length);
+      }
+
       setState(() {
 
       });
@@ -288,21 +217,13 @@ class _ChatPageState extends State<ChatPage> {
       }
     }
   }
-  void _onFocusChange() {
-    if (_focusNode.hasFocus) {
-      _scrollController.animateTo(
-        _scrollController.position.
-        minScrollExtent+MediaQuery.of(context)
-        .padding.bottom,
-        duration: Duration(milliseconds: 100),
-        curve: Curves.easeOut,
-      );
-    }
-  }
+
   @override
   void dispose() {
     // TODO: implement dispose
+
     super.dispose();
+
     eventBusFn!.cancel();
   }
 
@@ -327,8 +248,7 @@ class _ChatPageState extends State<ChatPage> {
                 controller: easyRefreshController,
                 onLoad: () async {
                   page++;
-
-                  await Future.delayed(const Duration(seconds: 2));
+                  await Future.delayed(const Duration(seconds: 1));
                   if (!mounted) {
                     return;
                   }
@@ -397,6 +317,14 @@ class _ChatPageState extends State<ChatPage> {
               sendImageMessage();
             },fileSendVoid: (){
             sendFileMessage();
+            },voiceVoid: (){
+              isSpeak=!isSpeak;
+              setState(() {
+
+              });
+            },isSpeak: isSpeak,stopRecord: (path,sec){
+              sendVAudioMessage(path);
+            print('body===${path},sec===${sec}');
             },)
         ],
       ),
@@ -435,7 +363,7 @@ class _ChatPageState extends State<ChatPage> {
   sendImageMessage()async{
     selectImages();
   }
-  /// 獲取文件地址
+  /// 獲取圖片地址
   Future requestDataWithPath(var value)async{
     MultipartFile multipartFile = MultipartFile.fromFileSync(
       '${value[0].path}',
@@ -448,7 +376,6 @@ class _ChatPageState extends State<ChatPage> {
     var json = await DioManager().kkRequest(Address.upload,bodyParams:formData);
     return json;
   }
-
   /// 上传图片
   selectImages() async {
     ImagePickers.pickerPaths(
@@ -486,7 +413,7 @@ class _ChatPageState extends State<ChatPage> {
     //   BotToast.showText(text: '');
     //   return;
     // }
-    print('value[0] ==== ${value[0]}');
+    print('value audio ==== ${value}');
 
     MultipartFile multipartFile = MultipartFile.fromFileSync(
       '${value[0].path}',
@@ -501,6 +428,26 @@ class _ChatPageState extends State<ChatPage> {
         bodyParams:formData);
     return json;
   }
+
+  /// 獲取audio 地址
+  Future requestDataWithAudio(var value)async{
+
+    print('value audio ==== ${value}');
+
+    MultipartFile multipartFile = MultipartFile.fromFileSync(
+      '${value}',
+      // filename: 'fileName.${value[0].path.split('.').last}',
+    );
+    FormData formData = FormData.fromMap({
+      'dir':'',
+      'type':'audio',
+      'file':multipartFile,
+    });
+    var json = await DioManager().kkRequest(Address.upload,
+        bodyParams:formData);
+    return json;
+  }
+
   /// 發送文件
   sendFileMessage()async{
 
@@ -527,6 +474,38 @@ class _ChatPageState extends State<ChatPage> {
     scrollViewBottom();
   }
 
+  ///发送语音
+  sendVAudioMessage(String path){
+    requestDataWithAudio(path).then((json1) {
+      var params = {
+        'room_key':widget.roomKey,
+        'msg':json1['data']['path'],
+        'type':5,
+        'file_name':json1['data']['file_name'],
+      };
+      var json = jsonEncode(params);
+      print('语音文件===============${json}');
+
+      WebSocketUtility().sendMessage(json);
+    });
+
+    // mesArr.insert(0,ChatMessage(
+    //     text: 'json[]',
+    //     time: 'time',
+    //     messageType: ChatMessageType.audio,
+    //     messageStatus: MessageStatus.viewed,
+    //     msgId: 11,
+    //     userId: 11,
+    //     room_key: 11,
+    //     avatar: '11',
+    //     nick_name: 11,
+    //     type: 5,
+    //     isSender: true));
+
+    setState(() {
+
+    });
+  }
 
 
   AppBar buildAppBar() {
@@ -534,59 +513,72 @@ class _ChatPageState extends State<ChatPage> {
       automaticallyImplyLeading: false,
       title: Row(
         children: [
-          const BackButton(),
-          Container(
-            color: Colors.white,
-            alignment: Alignment.center,
-            height: 50,
-            width: 50,
-            child: GridView.builder(
-              padding: EdgeInsets.all(0),
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context,index){
-                return Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                  ),
-                  clipBehavior: Clip.hardEdge,
-                  child: CachedNetworkImage(
-                    imageUrl: '${Address.homeHost}${Address.storage}/'
-                        '${widget.model1.userList![index].avatar}',
-                    progressIndicatorBuilder: (context, url, downloadProgress) =>
-                        CircularProgressIndicator(value: downloadProgress.progress),
-                    errorWidget: (context, url, error) => const Icon(Icons.error),
-                  ),
-                );
-              },itemCount: widget.model1.userList!.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 1,
-                  mainAxisSpacing: 1,
-                  childAspectRatio: 1
-              ),
-            ),
-          ),
+          IconButton(onPressed: (){
+            Get.back(result: 'chatListRefresh');
+          }, icon: Icon(Icons.arrow_back_ios)),
+
+          // const BackButton(),
+          // Container(
+          //   color: Colors.white,
+          //   alignment: Alignment.center,
+          //   height: 50,
+          //   width: 50,
+          //   child: GridView.builder(
+          //     padding: EdgeInsets.all(0),
+          //     shrinkWrap: true,
+          //     physics: NeverScrollableScrollPhysics(),
+          //     itemBuilder: (context,index){
+          //       return Container(
+          //         decoration: BoxDecoration(
+          //           borderRadius: BorderRadius.all(Radius.circular(30)),
+          //         ),
+          //         clipBehavior: Clip.hardEdge,
+          //         child: CachedNetworkImage(
+          //           imageUrl: '${Address.homeHost}${Address.storage}/'
+          //               '${widget.model1.userList![index].avatar}',
+          //           progressIndicatorBuilder: (context, url, downloadProgress) =>
+          //               CircularProgressIndicator(value: downloadProgress.progress),
+          //           errorWidget: (context, url, error) => const Icon(Icons.error),
+          //         ),
+          //       );
+          //     },itemCount: widget.model1.userList!.length,
+          //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          //         crossAxisCount: 2,
+          //         crossAxisSpacing: 3,
+          //         mainAxisSpacing: 3,
+          //         childAspectRatio: 1
+          //     ),
+          //   ),
+          // ),
           // const CircleAvatar(
           //   backgroundImage: AssetImage('images/user_2.png'),
           // ),
           const SizedBox(width: kDefaultPadding * 0.75),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text('聊天室', style: TextStyle(fontSize: 16)),
+            children:[
+
+             userLength==-1?Text(widget.model1.roomName==''?
+                'unnamed (${widget.model1.userList!.length}member)':'${widget.model1.roomName}'
+                  ' (${widget.model1.userList!.length}member)',
+                  style: TextStyle(fontSize: 16)):Text(widget.model1.roomName==''?
+            'unnamed (${userLength}member)':'${widget.model1.roomName}'
+                ' (${userLength}member)',
+                style: TextStyle(fontSize: 16)),
               // Text('Active 3m ago', style: TextStyle(fontSize: 12))
             ],
           )
         ],
       ),
-      // actions: [
-      //   IconButton(onPressed: () {}, icon: Icon(Icons.call)),
-      //   IconButton(onPressed: () {}, icon: Icon(Icons.videocam)),
-      //   SizedBox(
-      //     width: kDefaultPadding / 2,
-      //   )
-      // ],
+      actions: [
+        IconButton(onPressed: () {
+          Get.to(ChatInformationPage(model: widget.model1,));
+        }, icon: Image.asset('images/ic_dot3.png',width: 15,height: 15,)),
+        // IconButton(onPressed: () {}, icon: Icon(Icons.videocam)),
+        SizedBox(
+          width: kDefaultPadding / 2,
+        )
+      ],
     );
   }
 

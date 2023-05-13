@@ -3,6 +3,7 @@ import 'package:food_buyer/utils/hexcolor.dart';
 import 'colors.dart';
 
 final ThemeData appThemeData = ThemeData(
+  useMaterial3: true,
   textSelectionTheme: TextSelectionThemeData(
     cursorColor: AppColor.themeColor,
     selectionColor:  AppColor.smallTextColor,

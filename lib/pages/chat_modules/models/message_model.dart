@@ -55,7 +55,7 @@ class MessageModelList {
   int? msgId;
   String? nickName;
   var avatar;
-  int? type;
+  var type;
   String? createdAt;
   int? userId;
   String? msg;

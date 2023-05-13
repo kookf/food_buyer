@@ -1,13 +1,16 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:food_buyer/common/foodbuyer_theme.dart';
 import 'package:food_buyer/pages/bottom_nav_moudules/bottom_tab_controller.dart';
 import 'package:food_buyer/pages/bottom_nav_moudules/guide_page.dart';
 import 'package:food_buyer/pages/home_modules/home_page.dart';
 import 'package:food_buyer/pages/login_modules/login_page.dart';
 import 'package:food_buyer/utils/persisten_storage.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'common/app_theme.dart';
+import 'components/voice_widget.dart';
 import 'home_page.dart';
 import 'lang/message.dart';
 
@@ -19,6 +22,7 @@ void main() async{
 
 
 void initData()async{
+  requestPermission();
   await PersistentStorage().setStorage('language', 'english');
 }
 
@@ -30,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'food_buyer',
-      theme: appThemeData,
+      theme: FoodBuyerTheme().buildThemeData(),
       // 1 设置localizationsDelegates
       localizationsDelegates: const [
         GlobalWidgetsLocalizations.delegate,
@@ -51,4 +55,17 @@ class MyApp extends StatelessWidget {
       home: GuidePage(),
     );
   }
+}
+//申请权限
+requestPermission() async {
+  //多个权限申请
+  Map<Permission, PermissionStatus> statuses = await [
+    Permission.camera,
+    // Permission.location,
+    Permission.storage,
+    Permission.mediaLibrary,
+    Permission.microphone,
+  ].request();
+  debugPrint('权限状态  ==== $statuses');
+
 }

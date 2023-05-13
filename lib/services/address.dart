@@ -18,6 +18,7 @@ class Address{
   static const String userLogin = '/api/p1/user.login';
   static const String userCreate = '/api/p1/user.create';
   static const String userCreateSupplier = '/api/p1/supplier.create';
+  static const String userCreateCompany = '/api/p1/company.create';
   static const String chatList = '/api/v1/chat.list';
   static const String chatCreate= '/api/v1/chat.create';
   /// /api/v1/search.user  参数 keyword
@@ -31,6 +32,13 @@ class Address{
   static const String notePaDelete = '/api/v1/msg.notepad_delete';
   /// 聊天记录
   static const String msgList = '/api/v1/msg.list';
+  /// 離開聊天室
+  static const String leaveChatRoom = '/api/v1/chat.leave';
+  /// 聊天室添加人員
+  static const String chatUserAdd = '/api/v1/chat.user_add';
+  /// 聊天室添加人員
+  static const String chatChangeName = '/api/v1/chat.change_name';
+
   /// 用户头像设置
   static const String updateAvatar = '/api/v1/user.update_avatar';
 

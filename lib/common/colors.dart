@@ -14,7 +14,6 @@ class AppColor{
   static Color textFieldBorderColor = HexColor('#5B426A');
   /// 搜索框背景色
   static Color searchBgColor = HexColor('##F5F5F5');
-
   /// 常规字体
   static Color textColor = HexColor('#232323');
   /// 字體顏色

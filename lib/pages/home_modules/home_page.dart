@@ -5,7 +5,6 @@ import 'package:food_buyer/pages/home_modules/home_detail_page.dart';
 import 'package:get/get.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:easy_refresh/easy_refresh.dart';
-
 import '../../common/colors.dart';
 import '../../common/style.dart';
 import '../../components/custom_tabbar.dart';
@@ -20,7 +19,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin{
 
 
-  final List<String> _tabs = <String>['All', 'Latest','Most View',];
+  final List<String> _tabs = <String>
+  ['All', 'Latest','Most View',];
   late TabController tabController;
 
 
