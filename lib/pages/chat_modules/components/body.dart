@@ -17,6 +17,7 @@ import '../../../utils/event_utils.dart';
 import '../../../utils/websocket_kk.dart';
 import '../chat_list_model.dart';
 import '../models/ChatMessage.dart';
+import 'chat_information_modules/chat_information_detail_page.dart';
 import 'chat_information_modules/chat_information_page.dart';
 import 'chat_input_fields.dart';
 import 'constants.dart';
@@ -26,19 +27,23 @@ import 'package:dio/dio.dart';
 import 'package:get/route_manager.dart';
 import 'dart:io';
 import 'package:get/utils.dart';
+
 class ChatPage extends StatefulWidget {
-
   String roomKey;
-  ChatListData model1;
+  // ChatListData? model1;
+  String roomName;
+  String? target_name;
+  int member;
+  int? roomLock;
 
-  ChatPage(this.roomKey,this.model1,{Key? key}) : super(key: key);
+  ChatPage(this.roomKey,  {required this.roomName,
+    required this.member,this.target_name,this.roomLock,Key? key}) : super(key: key);
 
   @override
   State<ChatPage> createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-
   EasyRefreshController easyRefreshController = EasyRefreshController(
     controlFinishRefresh: true,
     controlFinishLoad: true,
@@ -47,7 +52,6 @@ class _ChatPageState extends State<ChatPage> {
   double? _viewportDimension;
 
   bool isSpeak = false;
-
 
   TextEditingController messageController = TextEditingController();
   ScrollController _scrollController = ScrollController();
@@ -64,61 +68,60 @@ class _ChatPageState extends State<ChatPage> {
 
   List<ChatMessage> ChatMessages = [];
 
-
-  List <ChatMessage> mesArr = [];
+  List<ChatMessage> mesArr = [];
   int page = 1;
 
-  requestDataWithMsg()async{
+  requestDataWithMsg() async {
     var params = {
-      'page':page,
-      'paage_size':10,
-      'room_key':widget.roomKey,
+      'page': page,
+      'paage_size': 10,
+      'room_key': widget.roomKey,
     };
-    var json = await DioManager().kkRequest(Address.msgList,bodyParams: params);
+    var json =
+        await DioManager().kkRequest(Address.msgList, bodyParams: params);
     MessageModel messageModel = MessageModel.fromJson(json);
 
-    for(int i = 0;i<messageModel.data!.list!.length;i++){
+    for (int i = 0; i < messageModel.data!.list!.length; i++) {
       bool isSender;
       ChatMessageType? messageType;
 
-      if(await PersistentStorage().getStorage('id')==messageModel.data!.list![i].userId){
+      if (await PersistentStorage().getStorage('id') ==
+          messageModel.data!.list![i].userId) {
         isSender = true;
-      }else{
+      } else {
         isSender = false;
       }
-      if(messageModel.data!.list![i].type==1){
+      if (messageModel.data!.list![i].type == 1) {
         messageType = ChatMessageType.text;
-      }else if(messageModel.data!.list![i].type==2){
+      } else if (messageModel.data!.list![i].type == 2) {
         messageType = ChatMessageType.image;
-      }else if(messageModel.data!.list![i].type==3){
+      } else if (messageModel.data!.list![i].type == 3) {
         messageType = ChatMessageType.file;
-      }else if(messageModel.data!.list![i].type==4){
+      } else if (messageModel.data!.list![i].type == 4) {
         messageType = ChatMessageType.leaveText;
-      }else if(messageModel.data!.list![i].type==5){
+      } else if (messageModel.data!.list![i].type == 5) {
         messageType = ChatMessageType.audio;
       }
 
       print(messageModel.data!.list![i].type);
       mesArr.add(ChatMessage(
-          text: '${messageModel.data!.list![i].msg}',
-          time: '${messageModel.data!.list![i].createdAt!}',
-          messageType: messageType!,
-          messageStatus: MessageStatus.viewed,
-          isSender: isSender,
-          nick_name: '${messageModel.data!.list![i].nickName}',
-          fileImagePath: '${messageModel.data!.list![i].msg}',
-          filePath: '${messageModel.data!.list![i].msg}',
-          fileName: messageModel.data!.list![i].file_name,
-           avatar: messageModel.data!.list![i].avatar,
-        msgId:messageModel.data!.list![i].msgId ,
-        userId:messageModel.data!.list![i].userId ,
+        text: '${messageModel.data!.list![i].msg}',
+        time: '${messageModel.data!.list![i].createdAt!}',
+        messageType: messageType!,
+        messageStatus: MessageStatus.viewed,
+        isSender: isSender,
+        nick_name: '${messageModel.data!.list![i].nickName}',
+        fileImagePath: '${messageModel.data!.list![i].msg}',
+        filePath: '${messageModel.data!.list![i].msg}',
+        fileName: messageModel.data!.list![i].file_name,
+        avatar: messageModel.data!.list![i].avatar,
+        msgId: messageModel.data!.list![i].msgId,
+        userId: messageModel.data!.list![i].userId,
         type: messageModel.data!.list![i].type,
       ));
     }
 
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   StreamSubscription? eventBusFn;
@@ -127,9 +130,9 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // initWeb();
-    // initWebSocket();
-    // initMessage();
+
+
+
     requestDataWithMsg();
 
     // _focusNode.addListener(_onFocusChange);
@@ -147,62 +150,63 @@ class _ChatPageState extends State<ChatPage> {
     //     });
     //   });
   }
-  int userLength = -1;
-  listerData(){
-    eventBusFn = EventBusUtil.listen((event) {
 
+  int userLength = -1;
+  listerData() {
+    eventBusFn = EventBusUtil.listen((event) {
       print('+++++++++++++++++++${event}');
 
-      if(event is String){
+      if(event=='refreshLock'){
+        widget.roomLock = 1;
+        setState(() {
+
+        });
+      }
+
+      if (event is String) {
         return;
       }
-        var type = event['type'];
-        if(event['type'] == 10){
-          List userList = event['userList'];
-          userLength = userList.length;
-          setState(() {
+      var type = event['type'];
+      if (event['type'] == 10) {
+        List userList = event['userList'];
+        userLength = userList.length;
+        setState(() {});
 
-          });
-
-          return;
-        }
-      if(type == 4){
+        return;
+      }
+      if (type == 4) {
         // List userList = event['userList'];
         // userLength = userList.length;
         print('event.obj type 4 ===== ${event}');
         userLength = event['user_nums'];
-        mesArr.insertAll(0,event['arr']);
+        mesArr.insertAll(0, event['arr']);
         print(mesArr.length);
         EventBusUtil.fire('chatListRefresh');
-        setState(() {
-
-        });
+        setState(() {});
         return;
       }
-      if(type == 1){
+      if (type == 1) {
         print('event.obj hh ===== ${event}');
-        mesArr.insertAll(0,event['arr']);
+        mesArr.insertAll(0, event['arr']);
         print(mesArr.length);
-      }else if(type ==2){
+      } else if (type == 2) {
         print('event.obj hh ===== ${event}');
-        mesArr.insertAll(0,event['arr']);
+        mesArr.insertAll(0, event['arr']);
         print(mesArr.length);
-      }else if(type ==3){
+      } else if (type == 3) {
         print('event.obj hh ===== ${event}');
-        mesArr.insertAll(0,event['arr']);
+        mesArr.insertAll(0, event['arr']);
         print(mesArr.length);
-      }else if(type==5){
+      } else if (type == 5) {
         print('event.obj hh ===== ${event}');
-        mesArr.insertAll(0,event['arr']);
+        mesArr.insertAll(0, event['arr']);
         print(mesArr.length);
       }
 
-      setState(() {
-
-      });
+      setState(() {});
     });
-
   }
+
   void _onHeaderChange() {
     final state = _listenable.value;
     if (state != null) {
@@ -235,58 +239,57 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         children: [
           Expanded(
-              child:EasyRefresh(
-                header: ListenerHeader(
-                  listenable: _listenable,
-                  triggerOffset: 100000,
-                  clamping: false,
-                ),
-                onRefresh: () {},
-                clipBehavior: Clip.none,
+              child: EasyRefresh(
+            header: ListenerHeader(
+              listenable: _listenable,
+              triggerOffset: 100000,
+              clamping: false,
+            ),
+            onRefresh: () {},
+            clipBehavior: Clip.none,
 
-                // footer: MaterialFooter(),
-                controller: easyRefreshController,
-                onLoad: () async {
-                  page++;
-                  await Future.delayed(const Duration(seconds: 1));
-                  if (!mounted) {
-                    return;
-                  }
-                  requestDataWithMsg();
-                  // return IndicatorResult.success;
-                  // easyRefreshController.finishLoad(
-                  //     IndicatorResult.success);
-                  easyRefreshController.finishLoad();
+            // footer: MaterialFooter(),
+            controller: easyRefreshController,
+            onLoad: () async {
+              page++;
+              await Future.delayed(const Duration(seconds: 1));
+              if (!mounted) {
+                return;
+              }
+              requestDataWithMsg();
+              // return IndicatorResult.success;
+              // easyRefreshController.finishLoad(
+              //     IndicatorResult.success);
+              easyRefreshController.finishLoad();
 
-                  // easyRefreshController.resetFooter();
-                  // return IndicatorResult.success;
-                  setState(() {
-                  });
-
-                },
-                child:CustomScrollView(
-                  reverse: true,
-                  shrinkWrap: _shrinkWrap,
-                  clipBehavior: Clip.none,
-                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                  controller: _scrollController,
-                  slivers: [
-                    SliverPadding(padding: EdgeInsets.only(left: 5,right: 5),
-                    sliver:SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                          return Message(message:mesArr[index]);
-                        },
-                        childCount: mesArr.length,
-                      ),
-                    ),)
-                  ],
-                  // itemCount: ChatMessages.length,
-                  // itemBuilder: (context, index) =>
-                  //     Message(message:ChatMessages[index]),
-                ),
-              )
-          ),
+              // easyRefreshController.resetFooter();
+              // return IndicatorResult.success;
+              setState(() {});
+            },
+            child: CustomScrollView(
+              reverse: true,
+              shrinkWrap: _shrinkWrap,
+              clipBehavior: Clip.none,
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              controller: _scrollController,
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.only(left: 5, right: 5),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return Message(message: mesArr[index]);
+                      },
+                      childCount: mesArr.length,
+                    ),
+                  ),
+                )
+              ],
+              // itemCount: ChatMessages.length,
+              // itemBuilder: (context, index) =>
+              //     Message(message:ChatMessages[index]),
+            ),
+          )),
 
           // Container(
           //   color: Colors.red,
@@ -310,44 +313,52 @@ class _ChatPageState extends State<ChatPage> {
           //     ],
           //   ),
           // )
-          ChatInputField(focusNode:_focusNode,
-            controller: messageController,sendVoid: (){
-            sendMessage();
-            },imageSendVoid: (){
+         widget.roomLock==1?SizedBox(): ChatInputField(
+            focusNode: _focusNode,
+            controller: messageController,
+            sendVoid: () {
+              sendMessage();
+            },
+            imageSendVoid: () {
               sendImageMessage();
-            },fileSendVoid: (){
-            sendFileMessage();
-            },voiceVoid: (){
-              isSpeak=!isSpeak;
-              setState(() {
-
-              });
-            },isSpeak: isSpeak,stopRecord: (path,sec){
+            },
+            fileSendVoid: () {
+              sendFileMessage();
+            },
+            voiceVoid: () {
+              isSpeak = !isSpeak;
+              setState(() {});
+            },
+            isSpeak: isSpeak,
+            stopRecord: (path, sec) {
               sendVAudioMessage(path);
-            print('body===${path},sec===${sec}');
-            },)
+              print('body===${path},sec===${sec}');
+            },
+          )
         ],
       ),
     );
   }
+
   /// 滾動到底部
-  scrollViewBottom(){
+  scrollViewBottom() {
     _scrollController.animateTo(
-      _scrollController.position.minScrollExtent+
+      _scrollController.position.minScrollExtent +
           MediaQuery.of(context).padding.bottom,
       duration: const Duration(milliseconds: 100),
       curve: Curves.easeOut,
     );
   }
+
   ///發送test信息
-  sendMessage()async{
-    if(messageController.text.isEmpty){
+  sendMessage() async {
+    if (messageController.text.isEmpty) {
       return;
     }
     var params = {
-      'room_key':widget.roomKey,
-      'msg':messageController.text,
-      'type':1,
+      'room_key': widget.roomKey,
+      'msg': messageController.text,
+      'type': 1,
     };
     var json = jsonEncode(params);
     print(json);
@@ -355,27 +366,29 @@ class _ChatPageState extends State<ChatPage> {
     WebSocketUtility().sendMessage(json);
     messageController.text = '';
 
-    setState(() {
-
-    });
+    setState(() {});
   }
+
   /// 發送image
-  sendImageMessage()async{
+  sendImageMessage() async {
     selectImages();
   }
+
   /// 獲取圖片地址
-  Future requestDataWithPath(var value)async{
+  Future requestDataWithPath(var value) async {
     MultipartFile multipartFile = MultipartFile.fromFileSync(
       '${value[0].path}',
     );
     FormData formData = FormData.fromMap({
-      'dir':'image',
-      'type':'image',
-      'file':multipartFile,
+      'dir': 'image',
+      'type': 'image',
+      'file': multipartFile,
     });
-    var json = await DioManager().kkRequest(Address.upload,bodyParams:formData);
+    var json =
+        await DioManager().kkRequest(Address.upload, bodyParams: formData);
     return json;
   }
+
   /// 上传图片
   selectImages() async {
     ImagePickers.pickerPaths(
@@ -391,24 +404,22 @@ class _ChatPageState extends State<ChatPage> {
     ).then((value) {
       requestDataWithPath(value).then((json1) {
         var params = {
-          'room_key':widget.roomKey,
-          'msg':json1['data']['path'],
-          'type':2,
-          'file_name':json1['data']['file_name'],
+          'room_key': widget.roomKey,
+          'msg': json1['data']['path'],
+          'type': 2,
+          'file_name': json1['data']['file_name'],
         };
         var json = jsonEncode(params);
         print('发送图片===============${json}');
 
         WebSocketUtility().sendMessage(json);
-
       });
       scrollViewBottom();
     });
   }
 
   /// 獲取文件地址
-  Future requestDataWithFilePath(var value)async{
-
+  Future requestDataWithFilePath(var value) async {
     // if(listFilePaths.isEmpty){
     //   BotToast.showText(text: '');
     //   return;
@@ -420,18 +431,17 @@ class _ChatPageState extends State<ChatPage> {
       // filename: 'fileName.${value[0].path.split('.').last}',
     );
     FormData formData = FormData.fromMap({
-      'dir':'',
-      'type':'file',
-      'file':multipartFile,
+      'dir': '',
+      'type': 'file',
+      'file': multipartFile,
     });
-    var json = await DioManager().kkRequest(Address.upload,
-        bodyParams:formData);
+    var json =
+        await DioManager().kkRequest(Address.upload, bodyParams: formData);
     return json;
   }
 
   /// 獲取audio 地址
-  Future requestDataWithAudio(var value)async{
-
+  Future requestDataWithAudio(var value) async {
     print('value audio ==== ${value}');
 
     MultipartFile multipartFile = MultipartFile.fromFileSync(
@@ -439,25 +449,24 @@ class _ChatPageState extends State<ChatPage> {
       // filename: 'fileName.${value[0].path.split('.').last}',
     );
     FormData formData = FormData.fromMap({
-      'dir':'',
-      'type':'audio',
-      'file':multipartFile,
+      'dir': '',
+      'type': 'audio',
+      'file': multipartFile,
     });
-    var json = await DioManager().kkRequest(Address.upload,
-        bodyParams:formData);
+    var json =
+        await DioManager().kkRequest(Address.upload, bodyParams: formData);
     return json;
   }
 
   /// 發送文件
-  sendFileMessage()async{
-
+  sendFileMessage() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     requestDataWithFilePath(result?.files).then((json1) {
       var params = {
-        'room_key':widget.roomKey,
-        'msg':json1['data']['path'],
-        'type':3,
-        'file_name':json1['data']['file_name'],
+        'room_key': widget.roomKey,
+        'msg': json1['data']['path'],
+        'type': 3,
+        'file_name': json1['data']['file_name'],
       };
       var json = jsonEncode(params);
       print('发送文件===============${json}');
@@ -475,13 +484,13 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   ///发送语音
-  sendVAudioMessage(String path){
+  sendVAudioMessage(String path) {
     requestDataWithAudio(path).then((json1) {
       var params = {
-        'room_key':widget.roomKey,
-        'msg':json1['data']['path'],
-        'type':5,
-        'file_name':json1['data']['file_name'],
+        'room_key': widget.roomKey,
+        'msg': json1['data']['path'],
+        'type': 5,
+        'file_name': json1['data']['file_name'],
       };
       var json = jsonEncode(params);
       print('语音文件===============${json}');
@@ -502,20 +511,19 @@ class _ChatPageState extends State<ChatPage> {
     //     type: 5,
     //     isSender: true));
 
-    setState(() {
-
-    });
+    setState(() {});
   }
-
 
   AppBar buildAppBar() {
     return AppBar(
       automaticallyImplyLeading: false,
       title: Row(
         children: [
-          IconButton(onPressed: (){
-            Get.back(result: 'chatListRefresh');
-          }, icon: Icon(Icons.arrow_back_ios)),
+          IconButton(
+              onPressed: () {
+                Get.back(result: 'chatListRefresh');
+              },
+              icon: Icon(Icons.arrow_back_ios)),
 
           // const BackButton(),
           // Container(
@@ -534,7 +542,7 @@ class _ChatPageState extends State<ChatPage> {
           //         ),
           //         clipBehavior: Clip.hardEdge,
           //         child: CachedNetworkImage(
-          //           imageUrl: '${Address.homeHost}${Address.storage}/'
+          //           imageUrl: '${Address.storage}/'
           //               '${widget.model1.userList![index].avatar}',
           //           progressIndicatorBuilder: (context, url, downloadProgress) =>
           //               CircularProgressIndicator(value: downloadProgress.progress),
@@ -554,26 +562,51 @@ class _ChatPageState extends State<ChatPage> {
           //   backgroundImage: AssetImage('images/user_2.png'),
           // ),
           const SizedBox(width: kDefaultPadding * 0.75),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:[
-
-             userLength==-1?Text(widget.model1.roomName==''?
-                'unnamed (${widget.model1.userList!.length}member)':'${widget.model1.roomName}'
-                  ' (${widget.model1.userList!.length}member)',
-                  style: TextStyle(fontSize: 16)):Text(widget.model1.roomName==''?
-            'unnamed (${userLength}member)':'${widget.model1.roomName}'
-                ' (${userLength}member)',
-                style: TextStyle(fontSize: 16)),
-              // Text('Active 3m ago', style: TextStyle(fontSize: 12))
-            ],
+          GestureDetector(
+            onTap: (){
+              // Get.to(ChatInformationDetailPage());
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                userLength == -1
+                    ? Container(
+                  width: 220,
+                      child: Text(
+                          widget.roomName == ''
+                              ? '${widget.target_name} (${widget.member}member)'
+                              : '${widget.roomName}'
+                                  ' (${widget.member}member)',
+                          style: TextStyle(fontSize: 16)),
+                    )
+                    : Container(
+                  width: 220,
+                      child: Text(
+                          widget.roomName == ''
+                              ? '${widget.target_name} (${userLength}member)'
+                              : '${widget.roomName}'
+                                  ' (${userLength}member)',
+                          style: TextStyle(fontSize: 16)),),
+               // widget.roomLock==0?SizedBox():Image.asset('images/ic_lock.png',width: 15,height: 15,)
+                // Text('Active 3m ago', style: TextStyle(fontSize: 12))
+              ],
+            ),
           )
         ],
       ),
       actions: [
-        IconButton(onPressed: () {
-          Get.to(ChatInformationPage(model: widget.model1,));
-        }, icon: Image.asset('images/ic_dot3.png',width: 15,height: 15,)),
+        IconButton(
+            onPressed: () {
+              Get.to(ChatInformationPage(
+                roomKey: widget.roomKey, roomName: widget.roomName,
+                // model: widget.model1,
+              ));
+            },
+            icon: Image.asset(
+              'images/ic_dot3.png',
+              width: 15,
+              height: 15,
+            )),
         // IconButton(onPressed: () {}, icon: Icon(Icons.videocam)),
         SizedBox(
           width: kDefaultPadding / 2,
@@ -581,6 +614,4 @@ class _ChatPageState extends State<ChatPage> {
       ],
     );
   }
-
 }
-

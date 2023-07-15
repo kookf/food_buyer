@@ -29,7 +29,7 @@ class Message extends StatelessWidget {
         case ChatMessageType.text:
           return TextMessage(message: message);
         case ChatMessageType.image:
-          return ImageMessage(message:message);
+          return ImageMessage(message: message);
         case ChatMessageType.audio:
           return AudioMessage(message: message);
         case ChatMessageType.video:
@@ -42,57 +42,53 @@ class Message extends StatelessWidget {
           return const SizedBox();
       }
     }
+
     return Container(
       margin: EdgeInsets.only(top: 0),
       // color: Colors.yellowAccent,
-      child:  Padding(
+      child: Padding(
         padding: const EdgeInsets.only(top: kDefaultPadding),
         child: Row(
-
-          mainAxisAlignment: message.type==4?MainAxisAlignment.center:
-          message.isSender ?
-          MainAxisAlignment.end :
-          MainAxisAlignment.start,
+          mainAxisAlignment: message.type == 4
+              ? MainAxisAlignment.center
+              : message.isSender
+                  ? MainAxisAlignment.end
+                  : MainAxisAlignment.start,
           children: [
-            if (!message.isSender)
-              ...[
-                // MessageStatusDot(status: message.messageStatus),
-              message.type==4?SizedBox():  Container(
-                  margin: EdgeInsets.only(left: 2),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.
-                      all(Radius.circular(15))
-                  ),
-                  clipBehavior: Clip.hardEdge,
-                  child: CachedNetworkImage(
-                    width: 30,
-                    height: 30,
-                    imageUrl: '${Address.homeHost}'
-                        '${Address.storage}/${message.avatar}',
-
-                  ),
-                ),
-                const SizedBox(
-                  width: kDefaultPadding / 2,
-                )
-              ],
+            if (!message.isSender) ...[
+              // MessageStatusDot(status: message.messageStatus),
+              message.type == 4
+                  ? SizedBox()
+                  : Container(
+                      margin: EdgeInsets.only(left: 2),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(15))),
+                      clipBehavior: Clip.hardEdge,
+                      child: CachedNetworkImage(
+                        width: 30,
+                        height: 30,
+                        imageUrl: '${Address.storage}/${message.avatar}',
+                      ),
+                    ),
+              const SizedBox(
+                width: kDefaultPadding / 2,
+              )
+            ],
             messageContaint(message),
             if (message.isSender)
-              message.type==4?SizedBox():  Container(
-                margin: EdgeInsets.only(left: 2),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.
-                    all(Radius.circular(15))
-                ),
-                clipBehavior: Clip.hardEdge,
-                child: CachedNetworkImage(
-                  width: 30,
-                  height: 30,
-                  imageUrl: '${Address.homeHost}'
-                      '${Address.storage}/${message.avatar}',
-
-                ),
-              )
+              message.type == 4
+                  ? SizedBox()
+                  : Container(
+                      margin: EdgeInsets.only(left: 2),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(15))),
+                      clipBehavior: Clip.hardEdge,
+                      child: CachedNetworkImage(
+                        width: 30,
+                        height: 30,
+                        imageUrl: '${Address.storage}/${message.avatar}',
+                      ),
+                    )
             // MessageStatusDot(status: message.messageStatus)
           ],
         ),

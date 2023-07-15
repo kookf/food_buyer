@@ -63,13 +63,13 @@ class MessageModelList {
 
   MessageModelList(
       {this.msgId,
-        this.nickName,
-        this.avatar,
-        this.type,
-        this.createdAt,
-        this.userId,
-        this.file_name,
-        this.msg});
+      this.nickName,
+      this.avatar,
+      this.type,
+      this.createdAt,
+      this.userId,
+      this.file_name,
+      this.msg});
 
   MessageModelList.fromJson(Map<String, dynamic> json) {
     msgId = json['msg_id'];

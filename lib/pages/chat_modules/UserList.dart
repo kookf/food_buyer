@@ -6,11 +6,13 @@ import 'dart:convert';
 
 UserList userListFromJson(String str) => UserList.fromJson(json.decode(str));
 String userListToJson(UserList data) => json.encode(data.toJson());
+
 class UserList {
   UserList({
-      this.userId, 
-      this.nickName, 
-      this.avatar,});
+    this.userId,
+    this.nickName,
+    this.avatar,
+  });
 
   UserList.fromJson(dynamic json) {
     userId = json['user_id'];
@@ -28,5 +30,4 @@ class UserList {
     map['avatar'] = avatar;
     return map;
   }
-
 }

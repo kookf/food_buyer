@@ -14,7 +14,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       appBar: AppBar(
         title: Text('修改密碼'),
       ),
-
     );
   }
 }

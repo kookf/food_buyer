@@ -4,7 +4,6 @@ import 'package:event_bus/event_bus.dart';
 class EventBusUtil {
   static EventBus? _eventBus;
 
-
   //获取单例
   static EventBus getInstance() {
     if (_eventBus == null) {
@@ -14,8 +13,7 @@ class EventBusUtil {
   }
 
   //返回某事件的订阅者
-  static StreamSubscription<T> listen<T>(
-      Function(T event) onData) {
+  static StreamSubscription<T> listen<T>(Function(T event) onData) {
     if (_eventBus == null) {
       _eventBus = EventBus();
     }

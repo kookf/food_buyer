@@ -42,9 +42,10 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
             height: 55,
           ),
           VerificationCode(
-            textStyle: TextStyle(fontSize: 20.0, color: AppColor.themeColor,
-            fontWeight: FontWeight.w600
-            ),
+            textStyle: TextStyle(
+                fontSize: 20.0,
+                color: AppColor.themeColor,
+                fontWeight: FontWeight.w600),
             keyboardType: TextInputType.number,
             underlineColor: Colors.transparent,
             //
@@ -70,7 +71,9 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
               // if (!_onEditing) FocusScope.of(context).unfocus();
             },
           ),
-          SizedBox(height: 55,),
+          SizedBox(
+            height: 55,
+          ),
           Container(
             padding: const EdgeInsets.only(left: 40, right: 40),
             child: MaterialButton(
@@ -94,11 +97,12 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
               ),
             ),
           ),
-          TextButton(onPressed: (){
-
-          }, child: Text(I18nContent.resendLabel,style: TextStyle(
-            fontSize: 15,color: AppColor.themeColor
-          ),))
+          TextButton(
+              onPressed: () {},
+              child: Text(
+                I18nContent.resendLabel,
+                style: TextStyle(fontSize: 15, color: AppColor.themeColor),
+              ))
         ],
       ),
     );

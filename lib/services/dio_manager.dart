@@ -7,12 +7,12 @@ import 'package:food_buyer/pages/login_modules/login_in_page.dart';
 import 'package:food_buyer/pages/login_modules/login_page.dart';
 import 'package:food_buyer/utils/printer.dart';
 import 'package:logger/logger.dart';
+import '../pages/bottom_nav_moudules/guide_page.dart';
 import '../utils/persisten_storage.dart';
 import 'address.dart';
 import 'package:get/get.dart';
 
-class DioManager{
-
+class DioManager {
   static final DioManager _instance = DioManager._internal();
 
   factory DioManager() => _instance;
@@ -47,13 +47,17 @@ class DioManager{
       print('baseOptions.baseUrl == ${baseOptions.baseUrl}');
     }
     if (isShowLoad == true) {
-      BotToast.showCustomLoading(clickClose: true, toastBuilder: (void Function() cancelFunc) {
-        return const CupertinoActivityIndicator();
-      },backgroundColor: Colors.transparent);
+      BotToast.showCustomLoading(
+          clickClose: true,
+          toastBuilder: (void Function() cancelFunc) {
+            return const CupertinoActivityIndicator();
+          },
+          backgroundColor: Colors.transparent);
     }
 
     Map<String, dynamic> baseHeader = {
-      'Authorization': 'Bearer ${await PersistentStorage().getStorage('token')}',
+      'Authorization':
+          'Bearer ${await PersistentStorage().getStorage('token')}',
     };
 
     print('baseHeader ================ $baseHeader');
@@ -70,24 +74,30 @@ class DioManager{
       var s = jsonEncode(json.data);
       // print('请求结果===== result.data ======= ${s}');
       LogUtil.d('请求结果===== result.data ======= ${s}');
-      if(json.data['code']==400){
+      if (json.data['code'] == 400) {
         BotToast.showText(text: '${json.data['message']}');
         // Get.offNamed(AppRoutes.login);
+      }
+      if (json.data['code'] == 404) {
+        // BotToast.showText(text: '${json.data['message']}');
+        // Get.offNamed(AppRoutes.login);
+        BotToast.showText(text: '請重新登錄');
+        Get.offAll(GuidePage());
       }
       BotToast.closeAllLoading();
       return json.data;
     } on DioError catch (error) {
-      print('请求结果===== ${error}');
+      print('请求结果mess===== ${error.message}');
 
-      if(error.response?.statusCode==302){
+      if (error.response?.statusCode == 302) {
+        BotToast.showText(text: '請重新登錄');
         Get.offAll(LoginPage());
-      }else if(error.response?.statusCode ==413){
+      } else if (error.response?.statusCode == 413) {
         BotToast.showText(text: '上傳文件超出指定空間，請使用1MB或以下的相片');
+      }else{
+        BotToast.showText(text: error.message);
       }
-
       BotToast.closeAllLoading();
-
-      BotToast.showText(text: error.message);
     }
   }
 }

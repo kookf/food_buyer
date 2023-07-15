@@ -23,7 +23,7 @@ class NotePadModel {
 }
 
 class Data {
-  List<NotePadItem>? list;
+  List<NotePodListItem>? list;
   int? totalRows;
   int? totalPage;
 
@@ -31,9 +31,9 @@ class Data {
 
   Data.fromJson(Map<String, dynamic> json) {
     if (json['list'] != null) {
-      list = <NotePadItem>[];
+      list = <NotePodListItem>[];
       json['list'].forEach((v) {
-        list!.add(NotePadItem.fromJson(v));
+        list!.add(new NotePodListItem.fromJson(v));
       });
     }
     totalRows = json['total_rows'];
@@ -42,62 +42,91 @@ class Data {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.list != null) {
-      data['list'] = this.list!.map((v) => v.toJson()).toList();
-    }
+
     data['total_rows'] = this.totalRows;
     data['total_page'] = this.totalPage;
     return data;
   }
 }
 
-class NotePadItem {
+class NotePodListItem {
+  int? cateId;
+  String? cateName;
+  List<Notepads>? notepads;
+
+  NotePodListItem({this.cateId, this.cateName, this.notepads});
+
+  NotePodListItem.fromJson(Map<String, dynamic> json) {
+    cateId = json['cate_id'];
+    cateName = json['cate_name'];
+    if (json['notepads'] != null) {
+      notepads = <Notepads>[];
+      json['notepads'].forEach((v) {
+        notepads!.add(new Notepads.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['cate_id'] = this.cateId;
+    data['cate_name'] = this.cateName;
+    if (this.notepads != null) {
+      data['notepads'] = this.notepads!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Notepads {
+  int? notepadId;
   int? msgId;
   String? nickName;
-  var avatar;
+  String? avatar;
   int? type;
   String? msgTime;
-  String? notepaddTime;
+  String? notepadTime;
   int? userId;
   String? msg;
-  String? file_name;
-  var notepad_id;
+  var fileName;
 
-  NotePadItem(
-      {this.msgId,
+  Notepads(
+      {this.notepadId,
+        this.msgId,
         this.nickName,
         this.avatar,
         this.type,
         this.msgTime,
-        this.notepaddTime,
+        this.notepadTime,
         this.userId,
-        this.file_name,
-        this.notepad_id,
-        this.msg});
+        this.msg,
+        this.fileName});
 
-  NotePadItem.fromJson(Map<String, dynamic> json) {
+  Notepads.fromJson(Map<String, dynamic> json) {
+    notepadId = json['notepad_id'];
     msgId = json['msg_id'];
     nickName = json['nick_name'];
     avatar = json['avatar'];
     type = json['type'];
     msgTime = json['msg_time'];
-    notepaddTime = json['notepadd_time'];
+    notepadTime = json['notepad_time'];
     userId = json['user_id'];
     msg = json['msg'];
-    file_name = json['file_name'];
-    notepad_id = json['notepad_id'];
+    fileName = json['file_name'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['notepad_id'] = this.notepadId;
     data['msg_id'] = this.msgId;
     data['nick_name'] = this.nickName;
     data['avatar'] = this.avatar;
     data['type'] = this.type;
     data['msg_time'] = this.msgTime;
-    data['notepadd_time'] = this.notepaddTime;
+    data['notepad_time'] = this.notepadTime;
     data['user_id'] = this.userId;
     data['msg'] = this.msg;
+    data['file_name'] = this.fileName;
     return data;
   }
 }

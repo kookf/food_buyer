@@ -60,17 +60,15 @@ class _AddChatFromPhoneState extends State<AddChatFromPhone> {
   }
 
   /// 创建一个聊天室
-  requestDataWithCreateChat(int targetId)async{
-    var params = {
-      'target_id':targetId
-    };
-    var json = await DioManager().kkRequest(Address.chatCreate,
-        bodyParams: params);
-    if(json['code'] == 200){
+  requestDataWithCreateChat(int targetId) async {
+    var params = {'target_id': targetId};
+    var json =
+        await DioManager().kkRequest(Address.chatCreate, bodyParams: params);
+    if (json['code'] == 200) {
       BotToast.showText(text: json['message']);
       Get.back(result: 'refresh');
       // Get.to(ChatPage(roomKey, model1))
-    }else{
+    } else {
       BotToast.showText(text: json['message']);
     }
   }
@@ -102,87 +100,100 @@ class _AddChatFromPhoneState extends State<AddChatFromPhone> {
               requestDataWithUserList();
             },
             controller: easyRefreshController,
-            child:dataArr.isEmpty?NoDataPage():
-            ListView.builder(
-              padding: EdgeInsets.only(top: 5),
-              itemBuilder: (context, index) {
-                AddUserList model = dataArr[index];
-                return  Column(
-                  // crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(left: 15,right: 15,top: 5,bottom: 15),
-                      color: Colors.white,
-                      width: Get.width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+            child: dataArr.isEmpty
+                ? NoDataPage()
+                : ListView.builder(
+                    padding: EdgeInsets.only(top: 5),
+                    itemBuilder: (context, index) {
+                      AddUserList model = dataArr[index];
+                      return Column(
+                        // crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(25)),
-                            ),
-                            clipBehavior: Clip.hardEdge,
-                            child: CachedNetworkImage(
-                              imageUrl:
-                              '${Address.homeHost}${Address.storage}/${model.avatar}',
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) =>
-                                  CircularProgressIndicator(
-                                      value: downloadProgress.progress),
-                              errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                            padding: EdgeInsets.only(
+                                left: 15, right: 15, top: 5, bottom: 15),
+                            color: Colors.white,
+                            width: Get.width,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(25)),
+                                  ),
+                                  clipBehavior: Clip.hardEdge,
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        '${Address.storage}/${model.avatar}',
+                                    progressIndicatorBuilder: (context, url,
+                                            downloadProgress) =>
+                                        CircularProgressIndicator(
+                                            value: downloadProgress.progress),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Expanded(
+                                    child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // SizedBox(height: 10,),
+                                    Text('昵稱:${model.nickName}'),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                    Container(
+                                      child: Text('公司名稱:${model.supplierName}'),
+                                    ),
+
+                                    // Container(
+                                    //   padding: EdgeInsets.only(left: 65),
+                                    //   child: Text('角色:${model.type==1?
+                                    //   '個人':model.type==2?'公司':'供應商'}'),
+                                    // ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          child: Text('電郵:${model.email}'),
+                                        ),
+                                      ],
+                                    ),
+                                    MaterialButton(
+                                      onPressed: () {
+                                        requestDataWithCreateChat(model.id!);
+                                      },
+                                      color: kDTCloud700,
+                                      child: Text(
+                                        '立即聊天',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(color: Colors.white),
+                                      ),
+                                    )
+                                  ],
+                                )),
+                              ],
                             ),
                           ),
-                          const SizedBox(width: 15,),
-                          Expanded(child:Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // SizedBox(height: 10,),
-                              Text('昵稱:${model.nickName}'),
-                              const SizedBox(height: 15,),
-                              Container(
-                                child: Text('公司名稱:${model.supplierName}'),
-                              ),
-
-                              // Container(
-                              //   padding: EdgeInsets.only(left: 65),
-                              //   child: Text('角色:${model.type==1?
-                              //   '個人':model.type==2?'公司':'供應商'}'),
-                              // ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    child: Text('電郵:${model.email}'),
-                                  ),
-
-                                ],
-                              ),
-                              MaterialButton(onPressed: (){
-                                requestDataWithCreateChat(model.id!);
-                              },
-                                color: kDTCloud700,child: Text('立即聊天',
-                                  style: Theme.of(context).textTheme
-                                .bodySmall!.copyWith(color: Colors.white),),)
-
-
-                            ],
-                          )),
+                          Container(
+                            height: 0.5,
+                            color: AppColor.lineColor,
+                          )
                         ],
-                      ),
-                    ),
-                    Container(
-                      height: 0.5,
-                      color: AppColor.lineColor,
-                    )
-                  ],
-                );
-              },
-              itemCount: dataArr.length,
-            ),
+                      );
+                    },
+                    itemCount: dataArr.length,
+                  ),
           ))
         ],
       ),
@@ -225,11 +236,11 @@ class _AddChatFromPhoneState extends State<AddChatFromPhone> {
                   onChanged: (value) {
                     print(selectValue);
                     selectValue = value!;
-                    if(selectValue =='個人'){
+                    if (selectValue == '個人') {
                       type = 1;
-                    }else if(selectValue=='公司'){
+                    } else if (selectValue == '公司') {
                       type = 2;
-                    }else {
+                    } else {
                       type = 3;
                     }
                     setState(() {});
@@ -284,9 +295,7 @@ class _AddChatFromPhoneState extends State<AddChatFromPhone> {
                               type = 3;
                               requestDataWithUserList();
                             }
-                            setState(() {
-
-                            });
+                            setState(() {});
                           },
                           controller: searchTextEditingController,
                           decoration: InputDecoration(
@@ -368,7 +377,12 @@ class AddUserList {
   String? phone;
   String? nickName;
   int? type;
+  int? supplier_id;
   var supplierName;
+  var location;
+  bool? isSelect = false;
+  List<ProductList>? productList;
+
 
   AddUserList(
       {this.id,
@@ -378,6 +392,10 @@ class AddUserList {
       this.phone,
       this.nickName,
       this.type,
+        this.productList,
+      this.supplier_id,
+      this.location,
+      this.isSelect,
       this.supplierName});
 
   AddUserList.fromJson(Map<String, dynamic> json) {
@@ -386,9 +404,17 @@ class AddUserList {
     avatar = json['avatar'];
     email = json['email'];
     phone = json['phone'];
+    supplier_id = json['supplier_id'];
     nickName = json['nick_name'];
+    location = json['location'];
     type = json['type'];
     supplierName = json['supplier_name'];
+    if (json['product_list'] != null) {
+      productList = <ProductList>[];
+      json['product_list'].forEach((v) {
+        productList!.add(new ProductList.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -401,6 +427,107 @@ class AddUserList {
     data['nick_name'] = this.nickName;
     data['type'] = this.type;
     data['supplier_name'] = this.supplierName;
+    return data;
+  }
+}
+
+class ProductList {
+  int? id;
+  int? userId;
+  int? supplierId;
+  String? title;
+  String? body;
+  int? sort;
+  int? status;
+  int? cateId;
+  String? res;
+  String? resLink;
+  int? resType;
+  int? isProduct;
+  String? price;
+  int? replyCount;
+  int? zanCount;
+  int? followCount;
+  String? createdAt;
+  String? updatedAt;
+  var deletedAt;
+  String? cateIds;
+  String? tag;
+  int? isTop;
+
+  ProductList(
+      {this.id,
+        this.userId,
+        this.supplierId,
+        this.title,
+        this.body,
+        this.sort,
+        this.status,
+        this.cateId,
+        this.res,
+        this.resLink,
+        this.resType,
+        this.isProduct,
+        this.price,
+        this.replyCount,
+        this.zanCount,
+        this.followCount,
+        this.createdAt,
+        this.updatedAt,
+        this.deletedAt,
+        this.cateIds,
+        this.tag,
+        this.isTop});
+
+  ProductList.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    userId = json['user_id'];
+    supplierId = json['supplier_id'];
+    title = json['title'];
+    body = json['body'];
+    sort = json['sort'];
+    status = json['status'];
+    cateId = json['cate_id'];
+    res = json['res'];
+    resLink = json['res_link'];
+    resType = json['res_type'];
+    isProduct = json['is_product'];
+    price = json['price'];
+    replyCount = json['reply_count'];
+    zanCount = json['zan_count'];
+    followCount = json['follow_count'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    deletedAt = json['deleted_at'];
+    cateIds = json['cate_ids'];
+    tag = json['tag'];
+    isTop = json['is_top'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['user_id'] = this.userId;
+    data['supplier_id'] = this.supplierId;
+    data['title'] = this.title;
+    data['body'] = this.body;
+    data['sort'] = this.sort;
+    data['status'] = this.status;
+    data['cate_id'] = this.cateId;
+    data['res'] = this.res;
+    data['res_link'] = this.resLink;
+    data['res_type'] = this.resType;
+    data['is_product'] = this.isProduct;
+    data['price'] = this.price;
+    data['reply_count'] = this.replyCount;
+    data['zan_count'] = this.zanCount;
+    data['follow_count'] = this.followCount;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['deleted_at'] = this.deletedAt;
+    data['cate_ids'] = this.cateIds;
+    data['tag'] = this.tag;
+    data['is_top'] = this.isTop;
     return data;
   }
 }

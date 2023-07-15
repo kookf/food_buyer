@@ -14,12 +14,13 @@ enum SocketStatus {
   socketStatusClosed, // 连接关闭
 }
 
-
 class WebSocketUtility {
   /// 单例对象
   static WebSocketUtility? _socket;
+
   /// 内部构造方法，可避免外部暴露构造函数，进行实例化
   WebSocketUtility._();
+
   /// 获取单例内部方法
   factory WebSocketUtility() {
     // 只能有一个实例
@@ -40,7 +41,8 @@ class WebSocketUtility {
   bool autoClose = true; // 接收消息回调
 
   /// 初始化WebSocket
-  void initWebSocket({Function? onOpen, Function? onMessage, Function? onError}) {
+  void initWebSocket(
+      {Function? onOpen, Function? onMessage, Function? onError}) {
     this.onOpen = onOpen;
     this.onMessage = onMessage;
     this.onError = onError;
@@ -49,7 +51,7 @@ class WebSocketUtility {
 
   /// 开启WebSocket连接
   void openSocket() {
-    if(autoClose == false){
+    if (autoClose == false) {
       if (_reconnectTimer != null) {
         _reconnectTimer?.cancel();
         _reconnectTimer = null;
@@ -106,7 +108,7 @@ class WebSocketUtility {
     var params = {
       // 'user_id':userId,
       // 'key':socketKey,
-      'type':-1,
+      'type': -1,
     };
     var json = jsonEncode(params);
 
@@ -156,7 +158,7 @@ class WebSocketUtility {
     if (_reconnectTimes < _reconnectCount) {
       _reconnectTimes++;
       _reconnectTimer =
-       Timer.periodic(Duration(milliseconds: _heartTimes), (timer) {
+          Timer.periodic(Duration(milliseconds: _heartTimes), (timer) {
         openSocket();
       });
     } else {

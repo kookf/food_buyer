@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
@@ -11,22 +10,17 @@ import '../../../components/voice_widget.dart';
 import 'constants.dart';
 
 typedef startRecord = Future Function();
-typedef stopRecord =  Function(String? path,double sec);
-
+typedef stopRecord = Function(String? path, double sec);
 
 class ChatInputField extends StatefulWidget {
-
   final Function? startRecord;
   final Function? stopRecord;
-
 
   VoidCallback sendVoid;
   VoidCallback imageSendVoid;
   VoidCallback fileSendVoid;
   VoidCallback voiceVoid;
   bool isSpeak;
-
-
 
   final TextEditingController? controller;
   final FocusNode? focusNode;
@@ -49,9 +43,9 @@ class ChatInputField extends StatefulWidget {
 }
 
 class _ChatInputFieldState extends State<ChatInputField> {
-
   // 倒计时总时长
   int _countTotal = 12;
+
   /// 录音时长
   int seconds = 0;
 
@@ -76,11 +70,13 @@ class _ChatInputFieldState extends State<ChatInputField> {
     _timer?.cancel();
     super.dispose();
   }
+
   @override
   void initState() {
     super.initState();
-    recordPlugin =  FlutterPluginRecord();
+    recordPlugin = FlutterPluginRecord();
     _init();
+
     ///初始化方法的监听
     recordPlugin?.responseFromInit.listen((data) {
       if (data) {
@@ -99,7 +95,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
         if (stopRecord != null) {
           print('stopRecord ===${data.audioTimeLength!}');
-          if(data.audioTimeLength!<=3){
+          if (data.audioTimeLength! <= 1) {
             return;
           }
           widget.stopRecord!(data.path, data.audioTimeLength);
@@ -142,7 +138,6 @@ class _ChatInputFieldState extends State<ChatInputField> {
     });
   }
 
-
   ///显示录音悬浮布局
   buildOverLayView(BuildContext context) {
     if (overlayEntry == null) {
@@ -154,22 +149,22 @@ class _ChatInputFieldState extends State<ChatInputField> {
                 margin: const EdgeInsets.only(top: 10),
                 child: _countTotal - _count < 11
                     ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 15.0),
-                    child: Text(
-                      (_countTotal - _count).toString(),
-                      style: TextStyle(
-                        fontSize: 70.0,
-                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 15.0),
+                          child: Text(
+                            (_countTotal - _count).toString(),
+                            style: TextStyle(
+                              fontSize: 70.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Image.asset(
+                        voiceIco,
+                        width: 100,
+                        height: 100,
                       ),
-                    ),
-                  ),
-                )
-                    :  Image.asset(
-                  voiceIco,
-                  width: 100,
-                  height: 100,
-                ),
               ),
               Container(
 //                      padding: const EdgeInsets.only(right: 20, left: 20, top: 0),
@@ -204,8 +199,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
   hideVoiceView() {
     if (_timer!.isActive) {
-      if (_count < 2) {
-        BotToast.showText(text: '说话时间太短');
+      if (_count < 1) {
+        BotToast.showText(text: '說話時間太短');
         // CommonToast.showView(
         //     context: context,
         //     msg: '说话时间太短',
@@ -271,111 +266,134 @@ class _ChatInputFieldState extends State<ChatInputField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+      padding: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
       decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          boxShadow: [BoxShadow(blurRadius: 32, offset: Offset(0, 4), color: Color(0xff087949).withOpacity(0.3))]),
+          boxShadow: [
+            BoxShadow(
+                blurRadius: 32,
+                offset: Offset(0, 4),
+                color: Color(0xff087949).withOpacity(0.3))
+          ]),
       child: SafeArea(
           child: Row(
-            children: [
-              GestureDetector(
-                onTap: (){
-                  print('mic');
-                  widget.voiceVoid();
-                },
-                child: Icon(Icons.mic, color: kPrimaryColor),
-              ),
-              SizedBox(width: kDefaultPadding),
-              widget.isSpeak==false ?
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 0.75),
-                  decoration: BoxDecoration(
-                    color: kPrimaryColor.withOpacity(0.07),
-                    borderRadius: BorderRadius.circular(40),
+        children: [
+          GestureDetector(
+            onTap: () {
+              print('mic');
+              widget.voiceVoid();
+            },
+            child: Icon(Icons.mic, color: kPrimaryColor),
+          ),
+          SizedBox(width: kDefaultPadding),
+          widget.isSpeak == false
+              ? Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: kDefaultPadding * 0.75),
+                    decoration: BoxDecoration(
+                      color: kPrimaryColor.withOpacity(0.07),
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    child: Row(
+                      children: [
+                        // Icon(
+                        //   Icons.sentiment_satisfied_alt_outlined,
+                        //   color: Theme.of(context).textTheme.bodyText1?.color?.withOpacity(0.64),
+                        // ),
+                        SizedBox(width: kDefaultPadding / 2),
+                        Expanded(
+                          child: TextField(
+                            focusNode: widget.focusNode,
+                            controller: widget.controller,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Type Message'),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            widget.fileSendVoid();
+                          },
+                          child: Icon(
+                            Icons.attach_file,
+                            color: Theme.of(context)
+                                .textTheme
+                                .bodyText1
+                                ?.color
+                                ?.withOpacity(0.64),
+                          ),
+                        ),
+                        SizedBox(width: kDefaultPadding / 4),
+                        GestureDetector(
+                          onTap: () {
+                            widget.imageSendVoid();
+                          },
+                          child: Icon(
+                            Icons.camera_alt_outlined,
+                            color: Theme.of(context)
+                                .textTheme
+                                .bodyText1
+                                ?.color
+                                ?.withOpacity(0.64),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                  child: Row(
-                    children: [
-                      // Icon(
-                      //   Icons.sentiment_satisfied_alt_outlined,
-                      //   color: Theme.of(context).textTheme.bodyText1?.color?.withOpacity(0.64),
-                      // ),
-                      SizedBox(width: kDefaultPadding / 2),
-                      Expanded(
-                        child: TextField(
-                          focusNode: widget.focusNode,
-                          controller: widget.controller,
-                          decoration: InputDecoration(border: InputBorder.none, hintText: 'Type Message'),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: (){
-                          widget.fileSendVoid();
-                        },
-                        child: Icon(
-                          Icons.attach_file,
-                          color: Theme.of(context).textTheme.bodyText1?.color?.withOpacity(0.64),
-                        ),
-                      ),
-                      SizedBox(width: kDefaultPadding / 4),
-                      GestureDetector(
-                        onTap: (){
-                          widget.imageSendVoid();
-                        },
-                        child: Icon(
-                          Icons.camera_alt_outlined,
-                          color: Theme.of(context).textTheme.bodyText1?.color?.withOpacity(0.64),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ):
-              Expanded(child:GestureDetector(
-                onLongPressStart: (details) {
-                  starty = details.globalPosition.dy;
-                  _timer = Timer.periodic
-                    (Duration(milliseconds: 1000), (t) {
-                    _count++;
-                    print('_count is 👉 $_count');
-                    if (_count == _countTotal) {
+                )
+              : Expanded(
+                  child: GestureDetector(
+                    onLongPressStart: (details) {
+                      starty = details.globalPosition.dy;
+                      _timer =
+                          Timer.periodic(Duration(milliseconds: 1000), (t) {
+                        _count++;
+                        print('_count is 👉 $_count');
+                        if (_count == _countTotal) {
+                          hideVoiceView();
+                        }
+                      });
+                      showVoiceView();
+                    },
+                    onLongPressEnd: (details) {
                       hideVoiceView();
-                    }
-                  });
-                  showVoiceView();
-                },
-                onLongPressEnd: (details) {
-                  hideVoiceView();
-                },
-                onLongPressMoveUpdate: (details) {
-                  offset = details.globalPosition.dy;
-                  moveVoiceView();
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: AppColor.themeColor,
-                    borderRadius: BorderRadius.all(Radius.circular(20 ))
+                    },
+                    onLongPressMoveUpdate: (details) {
+                      offset = details.globalPosition.dy;
+                      moveVoiceView();
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 45,
+                      decoration: BoxDecoration(
+                          color: AppColor.themeColor,
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                      child: Text(
+                        'Long press speech',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                   ),
-                  child:Text('Long press speech',style: TextStyle(
-                    color: Colors.white
-                  ),),
                 ),
-              ),),
-
-              SizedBox(width: 10,),
-              IconButton(onPressed: (){
+          SizedBox(
+            width: 10,
+          ),
+          IconButton(
+              onPressed: () {
                 widget.sendVoid();
-              }, icon: Image.asset('images/ic_chat_send.png',width: 35,height: 35,))
-            ],
-          )),
+              },
+              icon: Image.asset(
+                'images/ic_chat_send.png',
+                width: 35,
+                height: 35,
+              ))
+        ],
+      )),
     );
   }
 }
-
-
-
 
 // class ChatInputField extends StatelessWidget {
 //

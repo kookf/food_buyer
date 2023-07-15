@@ -7,8 +7,8 @@ import '../models/ChatMessage.dart';
 import 'package:get/get.dart';
 
 import 'constants.dart';
-class LeaveMessage extends StatelessWidget {
 
+class LeaveMessage extends StatelessWidget {
   final ChatMessage message;
   const LeaveMessage({Key? key, required this.message}) : super(key: key);
 
@@ -17,12 +17,12 @@ class LeaveMessage extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(bottom: 15),
       alignment: Alignment.center,
-      width: Get.width-150,
+      width: Get.width - 150,
       color: Colors.white,
-      child: Text('${message.nick_name} ${message.time} ${I18nContent.leftTheChatRoom.tr}',
-        style: TextStyle(
-            fontSize: 11,color: AppColor.smallTextColor
-        ),),
+      child: Text(
+        '${message.nick_name} ${message.time} ${I18nContent.leftTheChatRoom.tr}',
+        style: TextStyle(fontSize: 11, color: AppColor.smallTextColor),
+      ),
     );
   }
 }

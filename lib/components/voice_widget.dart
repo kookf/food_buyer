@@ -8,8 +8,6 @@ import 'custom_overlay.dart';
 typedef startRecord = Future Function();
 typedef stopRecord = Future Function();
 
-
-
 class VoiceWidget extends StatefulWidget {
   final Function? startRecord;
   final Function? stopRecord;
@@ -34,6 +32,7 @@ class VoiceWidget extends StatefulWidget {
 class _VoiceWidgetState extends State<VoiceWidget> {
   // 倒计时总时长
   int _countTotal = 12;
+
   /// 录音时长
   int seconds = 0;
 
@@ -133,7 +132,7 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                           ),
                         ),
                       )
-                    :  Image.asset(
+                    : Image.asset(
                         voiceIco,
                         width: 100,
                         height: 100,
@@ -173,7 +172,7 @@ class _VoiceWidgetState extends State<VoiceWidget> {
   hideVoiceView() {
     if (_timer!.isActive) {
       if (_count < 1) {
-        BotToast.showText(text: '说话时间太短');
+        BotToast.showText(text: '說話時間太短');
         // CommonToast.showView(
         //     context: context,
         //     msg: '说话时间太短',

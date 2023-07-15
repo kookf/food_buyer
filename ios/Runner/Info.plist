@@ -2,14 +2,16 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>想訪問你的相冊來上傳頭像，圖片等</string>
 	<key>NSCameraUsageDescription</key>
-	<string></string>
+	<string>想訪問你的相冊來上傳頭像，圖片等</string>
 	<key>NSAppleMusicUsageDescription</key>
-	<string></string>
+	<string>想訪問你的相冊來上傳頭像，圖片等</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string></string>
+	<string>想訪問你的麥克風來發送語音</string>
 	<key>NSDocumentsFolderUsageDescription</key>
-	<string></string>
+	<string>想訪問你的文件夾來發送語音</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

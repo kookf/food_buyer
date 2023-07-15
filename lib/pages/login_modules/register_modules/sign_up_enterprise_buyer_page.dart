@@ -1,6 +1,7 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:food_buyer/common/foodbuyer_colors.dart';
 import 'package:food_buyer/pages/login_modules/register_modules/register_complete_page.dart';
 import 'package:image_pickers/image_pickers.dart';
 
@@ -13,54 +14,51 @@ import '../../../utils/hexcolor.dart';
 import 'package:get/get.dart';
 
 import '../verification_code_page.dart';
+
 class SignUpEnterPriseBuyerPage extends StatefulWidget {
   const SignUpEnterPriseBuyerPage({Key? key}) : super(key: key);
 
   @override
-  State<SignUpEnterPriseBuyerPage> createState() => _SignUpEnterPriseBuyerPageState();
+  State<SignUpEnterPriseBuyerPage> createState() =>
+      _SignUpEnterPriseBuyerPageState();
 }
 
 class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
-
-
   List listFilePaths = [];
 
   /// 上传图片
   selectImages() async {
-
     print(listFilePaths.length);
 
-      ImagePickers.pickerPaths(
-        galleryMode: GalleryMode.image,
-        showGif: false,
-        selectCount: 1,
-        showCamera: true,
-        cropConfig: CropConfig(enableCrop: true, height: 1, width: 1),
-        compressSize: 300,
-        uiConfig: UIConfig(
-          uiThemeColor: AppColor.themeColor,
-        ),
-      ).then((value) {
-        listFilePaths.clear();
-        listFilePaths.addAll(value);
-        print(listFilePaths.length);
-        // if (listFilePaths.length > 0) {
-        //   MultipartFile multipartFile = MultipartFile.fromFileSync(
-        //     '${listFilePaths![0].path}',filename: 'avator_userinfo',
-        //   );
-        //   requestDataWithUpdataInfo(avatar: multipartFile);
-        //   listFilePaths!.forEach((media) {
-        //     print('media.path.toString() ==== ${media.path.toString()}');
-        //   });
-        // }
-        setState(() {
-
-        });
-      });
-    }
+    ImagePickers.pickerPaths(
+      galleryMode: GalleryMode.image,
+      showGif: false,
+      selectCount: 1,
+      showCamera: true,
+      cropConfig: CropConfig(enableCrop: true, height: 1, width: 1),
+      compressSize: 300,
+      uiConfig: UIConfig(
+        uiThemeColor: AppColor.themeColor,
+      ),
+    ).then((value) {
+      listFilePaths.clear();
+      listFilePaths.addAll(value);
+      print(listFilePaths.length);
+      // if (listFilePaths.length > 0) {
+      //   MultipartFile multipartFile = MultipartFile.fromFileSync(
+      //     '${listFilePaths![0].path}',filename: 'avator_userinfo',
+      //   );
+      //   requestDataWithUpdataInfo(avatar: multipartFile);
+      //   listFilePaths!.forEach((media) {
+      //     print('media.path.toString() ==== ${media.path.toString()}');
+      //   });
+      // }
+      setState(() {});
+    });
+  }
 
   /// 注册一个公司账号
-  bool verify =false;
+  bool verify = false;
 
   TextEditingController userNameController = TextEditingController();
   TextEditingController companyNameController = TextEditingController();
@@ -72,39 +70,37 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmedPasswordController = TextEditingController();
 
-  requestDataWithCreateIndividual()async{
+  requestDataWithCreateIndividual() async {
     var params = {
-      'nick_name':userNameController.text,
-      'company_name':companyNameController.text,
-      'company_name_en':companyNameEnController.text,
-      'contact_name':contactNameController.text,
-      'contact_number':contactNumberController.text,
-      'contact_email':contactEmailController.text,
-      'location':locationController.text,
-      'password':passwordController.text,
-      'confirmed_password':confirmedPasswordController.text,
+      'nick_name': userNameController.text,
+      'company_name': companyNameController.text,
+      'company_name_en': companyNameEnController.text,
+      'contact_name': contactNameController.text,
+      'contact_number': contactNumberController.text,
+      'contact_email': contactEmailController.text,
+      'location': locationController.text,
+      'password': passwordController.text,
+      'confirmed_password': confirmedPasswordController.text,
     };
-    var json = await DioManager().kkRequest(Address.userCreateCompany,
-        bodyParams: params);
-    if(json['code'] == 200){
+    var json = await DioManager()
+        .kkRequest(Address.userCreateCompany, bodyParams: params);
+    if (json['code'] == 200) {
       BotToast.showText(text: I18nContent.registerSuccessful);
       Get.back();
       Get.to(RegisterCompletePage());
-
-
-
-    }else{
-      BotToast.showText(text:json['message']);
+    } else {
+      BotToast.showText(text: json['message']);
     }
-
   }
-
 
   @override
   Widget build(BuildContext context) {
+    ThemeData baseColor = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(),
-        body: Column(
+      body: SafeArea(
+        child: Column(
           children: [
             Expanded(
               child: ListView(
@@ -114,33 +110,30 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
                     child: RichText(
                       text: TextSpan(
                           text: I18nContent.signupLabel.tr,
-                          style: size21BlackW700,
+                          style: baseColor.textTheme.headlineSmall!
+                              .copyWith(color: Colors.black),
                           children: [
                             TextSpan(
-                                text:' ${I18nContent.enterPriseBuyerLabel.tr}',
-                                style: TextStyle(
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColor.themeColor))
+                                text: ' ${I18nContent.enterPriseBuyerLabel.tr}',
+                                style: baseColor.textTheme.headlineSmall)
                           ]),
                     ),
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 35, right: 55, top: 15),
                     child: Center(
-                        child: Text(
+                      child: Text(
                           'Please your registered email address and password',
-                          style: TextStyle(
-                              color: AppColor.smallTextColor,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18),
-                        )),
+                          style: baseColor.textTheme.titleLarge!
+                              .copyWith(color: kDTCloudGray)),
+                    ),
                   ),
                   Container(
                     margin: EdgeInsets.only(left: 35, top: 25),
                     child: Text(
                       I18nContent.userNameDisPlayInChatroom.tr,
-                      style: size18BlackW700,
+                      style: baseColor.textTheme.headlineSmall!
+                          .copyWith(color: Colors.black),
                     ),
                   ),
                   const SizedBox(
@@ -163,7 +156,8 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
                     margin: EdgeInsets.only(left: 35, top: 25),
                     child: Text(
                       I18nContent.companyNameLocal.tr,
-                      style: size18BlackW700,
+                      style: baseColor.textTheme.headlineSmall!
+                          .copyWith(color: Colors.black),
                     ),
                   ),
                   const SizedBox(
@@ -186,7 +180,8 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
                     margin: EdgeInsets.only(left: 35, top: 25),
                     child: Text(
                       I18nContent.companyNameEn.tr,
-                      style: size18BlackW700,
+                      style: baseColor.textTheme.headlineSmall!
+                          .copyWith(color: Colors.black),
                     ),
                   ),
                   const SizedBox(
@@ -209,7 +204,8 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
                     margin: EdgeInsets.only(left: 35, top: 25),
                     child: Text(
                       I18nContent.businessRegistrationNumber.tr,
-                      style: size18BlackW700,
+                      style: baseColor.textTheme.headlineSmall!
+                          .copyWith(color: Colors.black),
                     ),
                   ),
                   const SizedBox(
@@ -232,7 +228,8 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
                     margin: EdgeInsets.only(left: 35, top: 25),
                     child: Text(
                       I18nContent.uploadBusinessRegistration.tr,
-                      style: size18BlackW700,
+                      style: baseColor.textTheme.headlineSmall!
+                          .copyWith(color: Colors.black),
                     ),
                   ),
                   SizedBox(
@@ -272,7 +269,8 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
                     margin: EdgeInsets.only(left: 35, top: 25),
                     child: Text(
                       I18nContent.companyLogo.tr,
-                      style: size18BlackW700,
+                      style: baseColor.textTheme.headlineSmall!
+                          .copyWith(color: Colors.black),
                     ),
                   ),
                   SizedBox(
@@ -310,7 +308,8 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
                     margin: EdgeInsets.only(left: 35, top: 25),
                     child: Text(
                       I18nContent.companyDescriptionOptional.tr,
-                      style: size18BlackW700,
+                      style: baseColor.textTheme.headlineSmall!
+                          .copyWith(color: Colors.black),
                     ),
                   ),
                   SizedBox(
@@ -336,7 +335,8 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
                     margin: EdgeInsets.only(left: 35, top: 25),
                     child: Text(
                       I18nContent.primaryContactName,
-                      style: size18BlackW700,
+                      style: baseColor.textTheme.headlineSmall!
+                          .copyWith(color: Colors.black),
                     ),
                   ),
                   const SizedBox(
@@ -358,7 +358,8 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
                     margin: EdgeInsets.only(left: 35, top: 25),
                     child: Text(
                       I18nContent.contactNumber.tr,
-                      style: size18BlackW700,
+                      style: baseColor.textTheme.headlineSmall!
+                          .copyWith(color: Colors.black),
                     ),
                   ),
                   const SizedBox(
@@ -380,7 +381,8 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
                     margin: EdgeInsets.only(left: 35, top: 25),
                     child: Text(
                       'Location',
-                      style: size18BlackW700,
+                      style: baseColor.textTheme.headlineSmall!
+                          .copyWith(color: Colors.black),
                     ),
                   ),
                   const SizedBox(
@@ -402,7 +404,8 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
                     margin: EdgeInsets.only(left: 35, top: 25),
                     child: Text(
                       I18nContent.primaryContactEmail.tr,
-                      style: size18BlackW700,
+                      style: baseColor.textTheme.headlineSmall!
+                          .copyWith(color: Colors.black),
                     ),
                   ),
                   const SizedBox(
@@ -424,7 +427,8 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
                     margin: EdgeInsets.only(left: 35, top: 25),
                     child: Text(
                       I18nContent.primaryContactPassword,
-                      style: size18BlackW700,
+                      style: baseColor.textTheme.headlineSmall!
+                          .copyWith(color: Colors.black),
                     ),
                   ),
                   const SizedBox(
@@ -443,69 +447,69 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
                     ),
                   ),
 
-                  Container(
-                    margin: EdgeInsets.only(left: 35, top: 25),
-                    child: Text(
-                      I18nContent.advertisementOptional.tr,
-                      style: size18BlackW700,
-                    ),
-                  ),
-                  Container(
-                    color: Colors.white,
-                    padding: EdgeInsets.only(left: 35,right: 0,top: 5),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        // Radio(value: 0, groupValue: 0, onChanged: (onChanged){
-                        //
-                        // }),
-                        Padding(padding: EdgeInsets.only(top: 3),child: Image.asset('images/ic_radio.png',width: 20,height: 20,),),
-                        SizedBox(width: 15,),
-                        Container(
-                          height: 55,
-                          width: Get.width - 100,
-                          child:Text('Lorem ipsum dolor sit amet consectetur. '
-                              'Tristique urna feugiat feugiat diam nascetur vestibulum eget bibendum. ',style: TextStyle(
-                            fontSize: 14,color: AppColor.smallTextColor,
-                          ),maxLines: 3,),
-                        )
-
-                      ],
-                    ),
-                  ),
-
-                  Container(
-                    margin: EdgeInsets.only(left: 35, top: 25),
-                    child: Text(
-                      'Terms and agreement  ',
-                      style: size18BlackW700,
-                    ),
-                  ),
-                  Container(
-                    color: Colors.white,
-                    padding: EdgeInsets.only(left: 35,right: 0,top: 5),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        // Radio(value: 0, groupValue: 0, onChanged: (onChanged){
-                        //
-                        // }),
-                        Padding(padding: EdgeInsets.only(top: 3),child: Image.asset('images/ic_radio.png',width: 20,height: 20,),),
-                        SizedBox(width: 15,),
-                        Container(
-                          height: 55,
-                          width: Get.width -100,
-                          child:Text('Lorem ipsum dolor sit amet consectetur. '
-                              'Tristique urna feugiat feugiat diam nascetur vestibulum eget bibendum. ',style: TextStyle(
-                            fontSize: 14,color: AppColor.smallTextColor,
-                          ),maxLines: 3,),
-                        )
-
-                      ],
-                    ),
-                  )
+                  // Container(
+                  //   margin: EdgeInsets.only(left: 35, top: 25),
+                  //   child: Text(
+                  //     I18nContent.advertisementOptional.tr,
+                  //     style: size18BlackW700,
+                  //   ),
+                  // ),
+                  // Container(
+                  //   color: Colors.white,
+                  //   padding: EdgeInsets.only(left: 35,right: 0,top: 5),
+                  //   child: Row(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     children: [
+                  //       // Radio(value: 0, groupValue: 0, onChanged: (onChanged){
+                  //       //
+                  //       // }),
+                  //       Padding(padding: EdgeInsets.only(top: 3),child: Image.asset('images/ic_radio.png',width: 20,height: 20,),),
+                  //       SizedBox(width: 15,),
+                  //       Container(
+                  //         height: 55,
+                  //         width: Get.width - 100,
+                  //         child:Text('Lorem ipsum dolor sit amet consectetur. '
+                  //             'Tristique urna feugiat feugiat diam nascetur vestibulum eget bibendum. ',style: TextStyle(
+                  //           fontSize: 14,color: AppColor.smallTextColor,
+                  //         ),maxLines: 3,),
+                  //       )
+                  //
+                  //     ],
+                  //   ),
+                  // ),
+                  //
+                  // Container(
+                  //   margin: EdgeInsets.only(left: 35, top: 25),
+                  //   child: Text(
+                  //     'Terms and agreement  ',
+                  //     style: size18BlackW700,
+                  //   ),
+                  // ),
+                  // Container(
+                  //   color: Colors.white,
+                  //   padding: EdgeInsets.only(left: 35,right: 0,top: 5),
+                  //   child: Row(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     children: [
+                  //       // Radio(value: 0, groupValue: 0, onChanged: (onChanged){
+                  //       //
+                  //       // }),
+                  //       Padding(padding: EdgeInsets.only(top: 3),child: Image.asset('images/ic_radio.png',width: 20,height: 20,),),
+                  //       SizedBox(width: 15,),
+                  //       Container(
+                  //         height: 55,
+                  //         width: Get.width -100,
+                  //         child:Text('Lorem ipsum dolor sit amet consectetur. '
+                  //             'Tristique urna feugiat feugiat diam nascetur vestibulum eget bibendum. ',style: TextStyle(
+                  //           fontSize: 14,color: AppColor.smallTextColor,
+                  //         ),maxLines: 3,),
+                  //       )
+                  //
+                  //     ],
+                  //   ),
+                  // )
                 ],
               ),
             ),
@@ -514,7 +518,9 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
               child: Center(
                 child: MaterialButton(
                   onPressed: () {
-                    Get.to(VerificationCodePage());
+                    // Get.to(VerificationCodePage());
+
+                    requestDataWithCreateIndividual();
                   },
                   color: AppColor.themeColor,
                   minWidth: Get.width - 80,
@@ -531,7 +537,8 @@ class _SignUpEnterPriseBuyerPageState extends State<SignUpEnterPriseBuyerPage> {
               ),
             )
           ],
-        )
+        ),
+      ),
     );
   }
 }

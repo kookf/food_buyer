@@ -14,7 +14,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
       appBar: AppBar(
         title: Text('123'),
       ),
-
     );
   }
 }

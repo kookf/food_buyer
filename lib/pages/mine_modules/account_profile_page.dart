@@ -14,52 +14,48 @@ import '../../common/colors.dart';
 import 'package:dio/dio.dart';
 import 'package:get/route_manager.dart';
 
-
 class AccountProfilePage extends StatefulWidget {
-
   const AccountProfilePage({Key? key}) : super(key: key);
   @override
   State<AccountProfilePage> createState() => _AccountProfilePageState();
 }
 
 class _AccountProfilePageState extends State<AccountProfilePage> {
-
-
-  TextEditingController companyController =TextEditingController();
-  TextEditingController nicknameController =TextEditingController();
-  TextEditingController descriptionController =TextEditingController();
-  TextEditingController emailController =TextEditingController();
-  TextEditingController supplierNameController =TextEditingController();
+  TextEditingController companyController = TextEditingController();
+  TextEditingController nicknameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController supplierNameController = TextEditingController();
 
   //
   /// 獲取文件地址
-  Future requestDataWithPath(var value)async{
+  Future requestDataWithPath(var value) async {
     MultipartFile multipartFile = MultipartFile.fromFileSync(
       '${value[0].path}',
     );
     FormData formData = FormData.fromMap({
-      'dir':'image',
-      'type':'image',
-      'file':multipartFile,
+      'dir': 'image',
+      'type': 'image',
+      'file': multipartFile,
     });
-    var json = await DioManager().kkRequest(Address.upload,bodyParams:formData);
+    var json =
+        await DioManager().kkRequest(Address.upload, bodyParams: formData);
     return json;
   }
 
   ///上传头像
-  requestDataWithUploadAvatar(avatar)async{
-    var params = {
-      'avatar':avatar
-    };
-    var json = await DioManager().kkRequest(Address.updateAvatar,
-        bodyParams: params);
-    if(json['code'] == 200){
-        BotToast.showText(text: '上传成功');
-        requestDataWithProfile();
-    }else{
+  requestDataWithUploadAvatar(avatar) async {
+    var params = {'avatar': avatar};
+    var json =
+        await DioManager().kkRequest(Address.updateAvatar, bodyParams: params);
+    if (json['code'] == 200) {
+      BotToast.showText(text: '上传成功');
+      requestDataWithProfile();
+    } else {
       BotToast.showText(text: json['message']);
     }
   }
+
   /// 上传图片
   selectImages() async {
     ImagePickers.pickerPaths(
@@ -67,264 +63,276 @@ class _AccountProfilePageState extends State<AccountProfilePage> {
       showGif: false,
       selectCount: 1,
       showCamera: true,
-      cropConfig: CropConfig(enableCrop: true,
-          height: 1, width: 1),
+      cropConfig: CropConfig(enableCrop: true, height: 1, width: 1),
       compressSize: 300,
       uiConfig: UIConfig(
         uiThemeColor: AppColor.themeColor,
       ),
     ).then((value) {
       requestDataWithPath(value).then((json1) {
-        requestDataWithUploadAvatar(json1['data']['path'],);
+        requestDataWithUploadAvatar(
+          json1['data']['path'],
+        );
       });
 
-      setState(() {
-
-      });
+      setState(() {});
     });
   }
 
-
   /// 获取个人信息
   ProfileModel? profileModel;
-  requestDataWithProfile()async{
-    var json = await DioManager().kkRequest(Address.userProfile,);
+  requestDataWithProfile() async {
+    var json = await DioManager().kkRequest(
+      Address.userProfile,
+    );
     ProfileModel model = ProfileModel.fromJson(json);
     profileModel = model;
     companyController.text = '${profileModel?.data?.name ?? '暫無'}';
     nicknameController.text = '${profileModel?.data?.nickName}';
     emailController.text = '${profileModel?.data?.email}';
 
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   /// 修改信息
-  requestDataWithUserSave(var nickName)async{
+  requestDataWithUserSave(var nickName) async {
     var params = {
-      'nick_name':nickName,
+      'nick_name': nickName,
     };
-    var json = await DioManager().kkRequest(Address.userSave,bodyParams: params);
+    var json =
+        await DioManager().kkRequest(Address.userSave, bodyParams: params);
 
-    if(json['code']==200){
+    if (json['code'] == 200) {
       BotToast.showText(text: I18nContent.updateSuccessfully);
-    }else{
+    } else {
       BotToast.showText(text: json['message']);
     }
     EventBusUtil.fire('menuRefresh');
     requestDataWithProfile();
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     requestDataWithProfile();
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     ThemeData baseColor = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          // TextButton(onPressed: (){
-          //
-          // }, child: Text(I18nContent.done.tr))
-
-        ],
-        title: Text(I18nContent.accountProfile.tr),
-      ),
-      body: Container(
-        color: AppColor.bgColor,
-        child: ListView(
-          padding: const EdgeInsets.only(top: 20),
-          children: [
-            GestureDetector(
-              onTap: (){
-                selectImages();
-              },
-              child: Container(
-                padding: const EdgeInsets.only(left: 25,right: 25),
-                height: 75,
-                color: Colors.white,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        appBar: AppBar(
+          actions: [
+            // TextButton(onPressed: (){
+            //
+            // }, child: Text(I18nContent.done.tr))
+          ],
+          title: Text(I18nContent.accountProfile.tr),
+        ),
+        body: Container(
+          color: AppColor.bgColor,
+          child: ListView(
+            padding: const EdgeInsets.only(top: 20),
+            children: [
+              GestureDetector(
+                onTap: () {
+                  selectImages();
+                },
+                child: Container(
+                  padding: const EdgeInsets.only(left: 15, right: 25),
+                  height: 75,
+                  color: Colors.white,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Center(
+                            child: Container(
+                              height: 60,
+                              width: 60,
+                              decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30)),
+                              ),
+                              clipBehavior: Clip.hardEdge,
+                              child: CachedNetworkImage(
+                                imageUrl:
+                                    '${Address.storage}/'
+                                    '${profileModel?.data?.avatar}',
+                                progressIndicatorBuilder:
+                                    (context, url, downloadProgress) =>
+                                        CircularProgressIndicator(
+                                            value: downloadProgress.progress),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Click to edit your avatar',
+                                style: baseColor.textTheme.titleLarge!
+                                    .copyWith(color: Colors.black),
+                              ),
+                              SizedBox(height: 10,),
+                              Text(
+                                '角色:${profileModel?.data?.type == 1 ? '個人' : profileModel?.data?.type == 2 ? '公司' : '供應商'}',
+                                style: baseColor.textTheme.bodySmall!
+                                    .copyWith(color: Colors.black),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                      Image.asset(
+                        'images/ic_arrow_right.png',
+                        width: 10,
+                        height: 10,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Center(
-                         child:  Container(
-                           height: 60,
-                           width: 60,
-                           decoration: const BoxDecoration(
-                             borderRadius: BorderRadius.all(Radius.circular(30)),
-                           ),
-                           clipBehavior: Clip.hardEdge,
-                           child: CachedNetworkImage(imageUrl:
-                           '${Address.homeHost}${Address.storage}/'
-                               '${profileModel?.data?.avatar}',
-                             progressIndicatorBuilder: (context, url, downloadProgress) =>
-                                 CircularProgressIndicator(value: downloadProgress.progress),
-                             errorWidget: (context, url, error) => const Icon(Icons.error),
-                           ),
-                         ),
-                       ),
-
-                        const SizedBox(width: 10,),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Click to edit your '
-                              'profile picture',style: baseColor.textTheme.titleLarge!.copyWith(
-                              color: Colors.black
-                            ),),
-                          Text('角色:${profileModel?.data?.type==1?'個人':
-                          profileModel?.data?.type == 2?'公司':'供應商'
-                          }',style:baseColor.textTheme.bodySmall!.copyWith(
-                            color: Colors.black
-                          ),)
-                        ],)
-                      ],
+                    Container(
+                      padding: const EdgeInsets.only(left: 25),
+                      width: Get.width,
+                      height: 30,
+                      alignment: Alignment.centerLeft,
+                      color: kDTCloud50,
+                      child: const Text(
+                        'Company name',
+                      ),
                     ),
-                    Image.asset('images/ic_arrow_right.png',
-                      width: 10,height: 10,)
+                    Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.only(left: 25),
+                      width: Get.width,
+                      height: 45,
+                      child: TextField(
+                        enabled: false,
+                        controller: supplierNameController
+                          ..text =
+                              '${profileModel?.data?.supplier_name ?? 'not yet'}',
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Enter your company name',
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
-            ),
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                  Container(
-                    padding: const EdgeInsets.only(left: 25),
-                    width: Get.width,
-                    height: 30,
-                    alignment: Alignment.centerLeft,
-                    color: kDTCloud50,
-                    child: const Text('Company name', ),
-                  ),
-                  Container(
-                    color: Colors.white,
-                    padding: EdgeInsets.only(left: 25),
-                    width: Get.width,
-                    height: 45,
-                    child: TextField(
-                      enabled: false,
-                      controller: supplierNameController..text
-                      = '${profileModel?.data?.supplier_name??'not yet'}',
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Enter your company name',
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(left: 25),
+                      width: Get.width,
+                      height: 30,
+                      alignment: Alignment.centerLeft,
+                      color: kDTCloud50,
+                      child: const Text(
+                        'Email',
                       ),
                     ),
-                  )
-
-                ],
+                    Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.only(left: 25),
+                      width: Get.width,
+                      height: 45,
+                      child: TextField(
+                        enabled:false ,
+                        controller: emailController,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Enter your company name',
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                  Container(
-                    padding: const EdgeInsets.only(left: 25),
-                    width: Get.width,
-                    height: 30,
-                    alignment: Alignment.centerLeft,
-                    color: kDTCloud50,
-                    child: const Text('Email', ),
-                  ),
-                  Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.only(left: 25),
-                    width: Get.width,
-                    height: 45,
-                    child: TextField(
-                      controller: emailController,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Enter your company name',
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(left: 25),
+                      width: Get.width,
+                      height: 30,
+                      alignment: Alignment.centerLeft,
+                      color: kDTCloud50,
+                      child: const Text(
+                        'Nick name',
                       ),
                     ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(left: 25),
-                    width: Get.width,
-                    height: 30,
-                    alignment: Alignment.centerLeft,
-                    color: kDTCloud50,
-                    child: const Text('Nick name', ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 25),
-                    width: Get.width,
-                    height: 45,
-                    color: Colors.white,
-                    child: TextField(
-                      controller: nicknameController,
-                      inputFormatters: <TextInputFormatter>[
-                        LengthLimitingTextInputFormatter(10) //限制长度
-                      ],
-                      onSubmitted: (value){
-                        requestDataWithUserSave(value);
-                      },
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Enter your nick name',
+                    Container(
+                      padding: const EdgeInsets.only(left: 25),
+                      width: Get.width,
+                      height: 45,
+                      color: Colors.white,
+                      child: TextField(
+                        controller: nicknameController,
+                        inputFormatters: <TextInputFormatter>[
+                          LengthLimitingTextInputFormatter(10) //限制长度
+                        ],
+                        onSubmitted: (value) {
+                          requestDataWithUserSave(value);
+                        },
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Enter your nick name',
+                        ),
                       ),
-                    ),
-                  )
-
-                ],
+                    )
+                  ],
+                ),
               ),
-            ),
-            // Container(
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       Container(
-            //         padding: EdgeInsets.only(left: 25),
-            //         width: Get.width,
-            //         height: 30,
-            //         alignment: Alignment.centerLeft,
-            //         child: Text('desc', ),
-            //         color: HexColor('#EDF2F9'),
-            //       ),
-            //       Container(
-            //         padding: EdgeInsets.only(left: 25),
-            //         width: Get.width,
-            //         color: Colors.white,
-            //         height: 150,
-            //         child: TextField(
-            //           controller: descriptionController,
-            //           decoration: InputDecoration(
-            //             border: InputBorder.none,
-            //             hintText: 'Enter your user name',
-            //           ),maxLines: 5,
-            //         ),
-            //       )
-            //     ],
-            //   ),
-            // ),
-          ],
-        ),
-      )
-    );
+              // Container(
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Container(
+              //         padding: EdgeInsets.only(left: 25),
+              //         width: Get.width,
+              //         height: 30,
+              //         alignment: Alignment.centerLeft,
+              //         child: Text('desc', ),
+              //         color: HexColor('#EDF2F9'),
+              //       ),
+              //       Container(
+              //         padding: EdgeInsets.only(left: 25),
+              //         width: Get.width,
+              //         color: Colors.white,
+              //         height: 150,
+              //         child: TextField(
+              //           controller: descriptionController,
+              //           decoration: InputDecoration(
+              //             border: InputBorder.none,
+              //             hintText: 'Enter your user name',
+              //           ),maxLines: 5,
+              //         ),
+              //       )
+              //     ],
+              //   ),
+              // ),
+            ],
+          ),
+        ));
   }
 }
 
@@ -364,13 +372,13 @@ class Data {
 
   Data(
       {this.id,
-        this.name,
-        this.avatar,
-        this.email,
-        this.phone,
-        this.nickName,
-        this.supplier_name,
-        this.type});
+      this.name,
+      this.avatar,
+      this.email,
+      this.phone,
+      this.nickName,
+      this.supplier_name,
+      this.type});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];

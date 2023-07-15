@@ -4,6 +4,7 @@ import 'package:food_buyer/common/colors.dart';
 import 'package:food_buyer/common/foodbuyer_colors.dart';
 import 'package:food_buyer/lang/message.dart';
 import 'package:food_buyer/pages/login_modules/login_model.dart';
+import 'package:food_buyer/pages/login_modules/verified_email_modules/verified_email_page.dart';
 import 'package:food_buyer/services/address.dart';
 import 'package:food_buyer/services/dio_manager.dart';
 import 'package:food_buyer/utils/hexcolor.dart';
@@ -20,30 +21,33 @@ class LoginInPage extends StatefulWidget {
 }
 
 class _LoginInPageState extends State<LoginInPage> {
-
-  TextEditingController emailAddressTextEditingController = TextEditingController();
+  TextEditingController emailAddressTextEditingController =
+      TextEditingController();
   TextEditingController passWordTextEditingController = TextEditingController();
 
-  requestDataWithLogin()async{
+  requestDataWithLogin() async {
     var params = {
-      'phone':emailAddressTextEditingController.text,
-      'password':passWordTextEditingController.text
+      'email': emailAddressTextEditingController.text,
+      'password': passWordTextEditingController.text
     };
-    var json = await DioManager().kkRequest(Address.userLogin,bodyParams: params);
+    var json =
+        await DioManager().kkRequest(Address.userLogin, bodyParams: params);
     LoginModel loginModel = LoginModel.fromJson(json);
-    if(loginModel.code == 200){
+    if(loginModel.code == 503){
+      Get.to(VerifiedEmailPage());
+    }
+    if (loginModel.code == 200) {
       await PersistentStorage().setStorage('token', loginModel.data?.token);
-      await PersistentStorage().setStorage('socket_key', loginModel.data?.socketKey);
+      await PersistentStorage()
+          .setStorage('socket_key', loginModel.data?.socketKey);
       await PersistentStorage().setStorage('id', loginModel.data?.id);
       await PersistentStorage().setStorage('phone', loginModel.data?.phone);
 
       Get.offAll(TabPage1());
-
-    }else{
+    } else {
       BotToast.showText(text: loginModel.message!);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -55,58 +59,67 @@ class _LoginInPageState extends State<LoginInPage> {
       body: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         children: [
-         Padding(
-           padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 15),
-           child:  RichText(text: TextSpan(
-             children: [
-               TextSpan(text: 'WelCome to ',style: baseColor.textTheme.headlineSmall!.
-               copyWith(color: Colors.black)),
-               TextSpan(text: 'FoodBuyer',style: baseColor.textTheme.headlineSmall),
-             ]
-         )),),
-
-          Container(
-            width: 200,
-              color: Colors.white,
-              margin: EdgeInsets.only(left: 25,top: 15,right: 55),
-            child: Text(
-              'Please your register email address and password',style: baseColor.textTheme
-              .titleLarge!.copyWith(color: kDTCloudGray),
-            )),
-
-          Container(
-            padding: EdgeInsets.only(left: 25,top: 45),
-            child: Text(I18nContent.phoneLabel.tr,style: baseColor.textTheme.
-              headlineSmall!.copyWith(color: Colors.black),),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+            child: RichText(
+                text: TextSpan(children: [
+              TextSpan(
+                  text: 'WelCome to ',
+                  style: baseColor.textTheme.headlineSmall!
+                      .copyWith(color: Colors.black)),
+              TextSpan(
+                  text: 'FoodBuyer', style: baseColor.textTheme.headlineSmall),
+            ])),
           ),
-          SizedBox(height: 10,),
-
+          Container(
+              width: 200,
+              color: Colors.white,
+              margin: EdgeInsets.only(left: 25, top: 15, right: 55),
+              child: Text(
+                'Please your register email address and password',
+                style: baseColor.textTheme.titleLarge!
+                    .copyWith(color: kDTCloudGray),
+              )),
+          Container(
+            padding: EdgeInsets.only(left: 25, top: 45),
+            child: Text(
+              I18nContent.emailAddressLabel.tr,
+              style: baseColor.textTheme.headlineSmall!
+                  .copyWith(color: Colors.black),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
           Center(
             child: Container(
-              margin: EdgeInsets.only(left: 25,right: 25),
+              margin: EdgeInsets.only(left: 25, right: 25),
               height: 55,
               child: TextFormField(
-              controller: emailAddressTextEditingController,
+                controller: emailAddressTextEditingController,
                 decoration: InputDecoration(
-                    labelText: I18nContent.pleaseEnterYourPhone.tr,
+                  labelText: I18nContent.pleaseEnterYourEmail.tr,
+                  labelStyle: TextStyle(fontSize: 16)
                 ),
               ),
             ),
           ),
-
-
-
-          SizedBox(height: 25,),
-          Container(
-            padding: EdgeInsets.only(left: 25,top: 0),
-            child: Text(I18nContent.passWord.tr,style: TextStyle(
-                fontWeight: FontWeight.w700,fontSize: 22,color: Colors.black
-            ),),
+          SizedBox(
+            height: 25,
           ),
-          SizedBox(height: 10,),
+          Container(
+            padding: EdgeInsets.only(left: 25, top: 0),
+            child: Text(
+              I18nContent.passWord.tr,
+              style: baseColor.textTheme.headlineSmall,
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
           Center(
             child: Container(
-              margin: EdgeInsets.only(left: 25,right: 25),
+              margin: EdgeInsets.only(left: 25, right: 25),
               height: 55,
               child: TextFormField(
                 obscureText: true,
@@ -117,21 +130,29 @@ class _LoginInPageState extends State<LoginInPage> {
               ),
             ),
           ),
-
-          SizedBox(height: 55,),
+          SizedBox(
+            height: 55,
+          ),
           Container(
-            padding: EdgeInsets.only(left: 15,right: 15),
-            child:  MaterialButton(onPressed: (){
-
-              requestDataWithLogin();
-              // if(emailAddressTextEditingController.text == '123'){
-              //   Get.offAll(TabPage());
-              // }
-
-            },child: Text(I18nContent.loginLabel.tr,style: TextStyle(color: Colors.white,fontSize: 18),)
-              ,color: AppColor.themeColor,minWidth: Get.width,height: 55,shape: const RoundedRectangleBorder(
+            padding: EdgeInsets.only(left: 15, right: 15),
+            child: MaterialButton(
+              onPressed: () {
+                requestDataWithLogin();
+                // if(emailAddressTextEditingController.text == '123'){
+                //   Get.offAll(TabPage());
+                // }
+              },
+              child: Text(
+                I18nContent.loginLabel.tr,
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+              color: AppColor.themeColor,
+              minWidth: Get.width,
+              height: 55,
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(25)),
-              ),),
+              ),
+            ),
           ),
         ],
       ),

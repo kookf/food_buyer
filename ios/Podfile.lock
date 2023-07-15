@@ -14,9 +14,6 @@ PODS:
   - AFNetworking/Serialization (4.0.1)
   - AFNetworking/UIKit (4.0.1):
     - AFNetworking/NSURLSession
-  - audioplayers_darwin (0.0.1):
-    - Flutter
-  - BIJKPlayer (0.7.16)
   - DKImagePickerController/Core (4.3.4):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
@@ -48,13 +45,23 @@ PODS:
   - DKPhotoGallery/Resource (0.0.17):
     - SDWebImage
     - SwiftyGif
-  - fijkplayer (0.9.0):
-    - BIJKPlayer (~> 0.7.10)
-    - Flutter
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
   - Flutter (1.0.0)
+  - flutter_inappwebview (0.0.1):
+    - Flutter
+    - flutter_inappwebview/Core (= 0.0.1)
+    - OrderedSet (~> 5.0)
+  - flutter_inappwebview/Core (0.0.1):
+    - Flutter
+    - OrderedSet (~> 5.0)
+  - flutter_plugin_record_plus (0.0.1):
+    - Flutter
+  - flutter_stripe_payment (0.0.13):
+    - Flutter
+    - Stripe (= 23.8.0)
+    - StripePaymentSheet (= 23.8.0)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -63,86 +70,169 @@ PODS:
     - Flutter
     - SDWebImage
     - ZLPhotoBrowser (~> 4.3.9)
+  - JCore (3.2.5)
+  - JPush (4.8.1):
+    - JCore (>= 2.0.0)
+  - jpush_flutter (0.0.2):
+    - Flutter
+    - JCore (= 3.2.5)
+    - JPush (= 4.8.1)
+  - OrderedSet (5.0.0)
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - permission_handler_apple (9.1.0):
+    - Flutter
   - SDWebImage (5.15.7):
     - SDWebImage/Core (= 5.15.7)
   - SDWebImage/Core (5.15.7)
+  - share_plus (0.0.1):
+    - Flutter
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - sqflite (0.0.2):
+  - simple_audio_player (0.0.1):
+    - Flutter
+  - sqflite (0.0.3):
     - Flutter
     - FMDB (>= 2.7.5)
+  - Stripe (23.8.0):
+    - StripeApplePay (= 23.8.0)
+    - StripeCore (= 23.8.0)
+    - StripePayments (= 23.8.0)
+    - StripePaymentsUI (= 23.8.0)
+    - StripeUICore (= 23.8.0)
+  - StripeApplePay (23.8.0):
+    - StripeCore (= 23.8.0)
+  - StripeCore (23.8.0)
+  - StripePayments (23.8.0):
+    - StripeCore (= 23.8.0)
+    - StripePayments/Stripe3DS2 (= 23.8.0)
+  - StripePayments/Stripe3DS2 (23.8.0):
+    - StripeCore (= 23.8.0)
+  - StripePaymentSheet (23.8.0):
+    - StripeApplePay (= 23.8.0)
+    - StripeCore (= 23.8.0)
+    - StripePayments (= 23.8.0)
+    - StripePaymentsUI (= 23.8.0)
+  - StripePaymentsUI (23.8.0):
+    - StripeCore (= 23.8.0)
+    - StripePayments (= 23.8.0)
+    - StripeUICore (= 23.8.0)
+  - StripeUICore (23.8.0):
+    - StripeCore (= 23.8.0)
   - SwiftyGif (5.4.4)
   - url_launcher_ios (0.0.1):
+    - Flutter
+  - video_player_avfoundation (0.0.1):
     - Flutter
   - ZLPhotoBrowser (4.3.9):
     - ZLPhotoBrowser/Core (= 4.3.9)
   - ZLPhotoBrowser/Core (4.3.9)
 
 DEPENDENCIES:
-  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
-  - fijkplayer (from `.symlinks/plugins/fijkplayer/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
+  - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
+  - flutter_plugin_record_plus (from `.symlinks/plugins/flutter_plugin_record_plus/ios`)
+  - flutter_stripe_payment (from `.symlinks/plugins/flutter_stripe_payment/ios`)
   - image_pickers (from `.symlinks/plugins/image_pickers/ios`)
+  - jpush_flutter (from `.symlinks/plugins/jpush_flutter/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - simple_audio_player (from `.symlinks/plugins/simple_audio_player/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
 
 SPEC REPOS:
   trunk:
     - AFNetworking
-    - BIJKPlayer
     - DKImagePickerController
     - DKPhotoGallery
     - FMDB
+    - JCore
+    - JPush
+    - OrderedSet
     - SDWebImage
+    - Stripe
+    - StripeApplePay
+    - StripeCore
+    - StripePayments
+    - StripePaymentSheet
+    - StripePaymentsUI
+    - StripeUICore
     - SwiftyGif
     - ZLPhotoBrowser
 
 EXTERNAL SOURCES:
-  audioplayers_darwin:
-    :path: ".symlinks/plugins/audioplayers_darwin/ios"
-  fijkplayer:
-    :path: ".symlinks/plugins/fijkplayer/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
+  flutter_inappwebview:
+    :path: ".symlinks/plugins/flutter_inappwebview/ios"
+  flutter_plugin_record_plus:
+    :path: ".symlinks/plugins/flutter_plugin_record_plus/ios"
+  flutter_stripe_payment:
+    :path: ".symlinks/plugins/flutter_stripe_payment/ios"
   image_pickers:
     :path: ".symlinks/plugins/image_pickers/ios"
+  jpush_flutter:
+    :path: ".symlinks/plugins/jpush_flutter/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
+  share_plus:
+    :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
+  simple_audio_player:
+    :path: ".symlinks/plugins/simple_audio_player/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
+  video_player_avfoundation:
+    :path: ".symlinks/plugins/video_player_avfoundation/ios"
 
 SPEC CHECKSUMS:
   AFNetworking: 3bd23d814e976cd148d7d44c3ab78017b744cd58
-  audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
-  BIJKPlayer: 4c5d66e5cb99ae5bade6f22a4fcc031722a81c64
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
-  fijkplayer: f9cdfb1e8c9ba8ed31dda5689cebabe52f233907
   file_picker: ce3938a0df3cc1ef404671531facef740d03f920
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
+  flutter_plugin_record_plus: 79b8e13ee7ed9a94f6c067018653599528cee1fc
+  flutter_stripe_payment: 39e69f9f1f829dac09b9fd9ba3f42bc7df93e790
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   image_pickers: 4406949954a5eb4fac5ada5f13810e6419ef4467
-  path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
+  JCore: 4c9febdfdb1a5675ab361bc1f06c0905391d7b23
+  JPush: 2caabdb6d62d009bc07a9bd115d03c7c42512b5e
+  jpush_flutter: 3badd7fb60be478508730b46a701430be4d13c48
+  OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
+  path_provider_foundation: eaf5b3e458fc0e5fbb9940fb09980e853fe058b8
+  permission_handler_apple: 8f116445eff3c0e7c65ad60f5fef5490aa94b4e4
   SDWebImage: 25bac438318faf37e35650619ebc288a9061d292
-  shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
-  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
+  share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
+  shared_preferences_foundation: e2dae3258e06f44cc55f49d42024fd8dd03c590c
+  simple_audio_player: 61e356d9dea6ee469457a4312d830a8f3b281595
+  sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
+  Stripe: 5432fbab660595a3bee937235dd71a99028ac68c
+  StripeApplePay: 5e686f50ee07c439b79b907dffeb144135e601c9
+  StripeCore: 91164d69b8593f44df9ee93e56a00355592068b6
+  StripePayments: c19d94c55723894e1f47dadb40a6f1bfa7fac214
+  StripePaymentSheet: 1fef5afa050bfd684e84553cba613041a2b3d7b7
+  StripePaymentsUI: 7d2fc8fe17c3fdc63508bc54df2b7cc3f45c8ef7
+  StripeUICore: 1dc4d2f9afcd908db85190e9091dfe260a1861fe
   SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
+  video_player_avfoundation: 81e49bb3d9fb63dccf9fa0f6d877dc3ddbeac126
   ZLPhotoBrowser: 02b3569b8f702d2e153e8fdb1f6b32fef3a2867c
 
-PODFILE CHECKSUM: 6a6ec47461aab621e2b24262fb76c23a0d8e0030
+PODFILE CHECKSUM: 5b54468e12fa91e7e2fd8057a97f2f487ba04944
 
 COCOAPODS: 1.12.1

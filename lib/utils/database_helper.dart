@@ -54,11 +54,11 @@ class DatabaseHelper {
   }
 
   Future<int> update(
-      String table,
-      Map<String, Object?> values,
-      String where,
-      List<Object?> whereArgs,
-      ) async {
+    String table,
+    Map<String, Object?> values,
+    String where,
+    List<Object?> whereArgs,
+  ) async {
     final db = await database;
     return await db.update(
       table,
@@ -68,7 +68,9 @@ class DatabaseHelper {
     );
   }
 
-  Future<int> delete(String table,) async {
+  Future<int> delete(
+    String table,
+  ) async {
     final db = await database;
     return await db.delete(
       table,

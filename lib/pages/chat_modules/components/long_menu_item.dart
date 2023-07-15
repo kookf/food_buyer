@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:food_buyer/common/colors.dart';
 import 'package:food_buyer/utils/hexcolor.dart';
 import 'package:get/get.dart';
-class LongMenuItem extends StatefulWidget {
 
+class LongMenuItem extends StatefulWidget {
   VoidCallback? replyVoid;
   VoidCallback? forwardVoid;
   VoidCallback? copyVoid;
@@ -13,19 +13,30 @@ class LongMenuItem extends StatefulWidget {
   VoidCallback? addToNotepadVoid;
   VoidCallback? deleteVoid;
 
-
-
-   LongMenuItem(
-      {this.addToNotepadVoid,Key? key}) : super(key: key);
+  LongMenuItem({this.addToNotepadVoid,this.reportVoid,
+    this.forwardVoid,this.copyVoid,this.replyVoid,Key? key}) : super(key: key);
 
   @override
   State<LongMenuItem> createState() => _LongMenuItemState();
 }
 
 class _LongMenuItemState extends State<LongMenuItem> {
-
-  List item = ['Reply','Forward','Copy','Report','Add to Notepad','Delete'];
-  List itemImg = ['ic_reply','ic_forward','ic_copy','ic_report','ic_add_to_notdpad','ic_delete'];
+  List item = [
+    'Reply',
+    'Forward',
+    'Copy',
+    'Report',
+    'Add to Notepad',
+    'Delete'
+  ];
+  List itemImg = [
+    'ic_reply',
+    'ic_forward',
+    'ic_copy',
+    'ic_report',
+    'ic_add_to_notdpad',
+    'ic_delete'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -34,50 +45,72 @@ class _LongMenuItemState extends State<LongMenuItem> {
       child: Center(
         child: Container(
           decoration: BoxDecoration(
-            color: HexColor('#EDEDED'),
-            borderRadius: BorderRadius.all(Radius.circular(8))
-          ),
+              color: HexColor('#EDEDED'),
+              borderRadius: BorderRadius.all(Radius.circular(8))),
           width: 250,
           height: 280,
-          child:ListView.builder(
+          child: ListView.builder(
             padding: EdgeInsets.all(0),
             itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: (){
-                Get.back();
-                if(item[index]=='Add to Notepad'){
-                  widget.addToNotepadVoid!();
-                }
+              return GestureDetector(
+                onTap: () {
+                  Get.back();
+                  if (item[index] == 'Add to Notepad') {
+                    widget.addToNotepadVoid!();
+                  }else if(item[index] == 'Report'){
+                    widget.reportVoid!();
+                  }else if(item[index] == 'Forward'){
+                    widget.forwardVoid!();
+                  }else if(item[index] == 'Copy'){
+                    widget.copyVoid!();
+                  }else if(item[index] == 'Reply'){
+                    widget.replyVoid!();
+                  }
 
-                print('${item[index]}');
-                // BotToast.showText(text: item[index]);
-              },
-              child: Container(
-                color: Colors.transparent,
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(item[index],style: TextStyle(fontSize: 17,
-                              fontWeight: FontWeight.w600,color:
-                              index==4?AppColor.themeColor:
-                              index==5?Colors.red:Colors.black),),
-                          Image.asset('images/${itemImg[index]}.png',width: 25,height: 25,),
-                        ],
+                  print('${item[index]}');
+                  // BotToast.showText(text: item[index]);
+                },
+                child: Container(
+                  color: Colors.transparent,
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              item[index],
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                  color: index == 4
+                                      ? AppColor.themeColor
+                                      : index == 5
+                                          ? Colors.red
+                                          : Colors.black),
+                            ),
+                            Image.asset(
+                              'images/${itemImg[index]}.png',
+                              width: 25,
+                              height: 25,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    index+1==item.length?SizedBox():Container(
-                      height: 1,
-                      color: AppColor.lineColor,
-                    )
-                  ],
+                      index + 1 == item.length
+                          ? SizedBox()
+                          : Container(
+                              height: 1,
+                              color: AppColor.lineColor,
+                            )
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },itemCount:item.length,),
+              );
+            },
+            itemCount: item.length,
+          ),
         ),
       ),
     );

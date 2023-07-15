@@ -7,17 +7,26 @@ import 'package:flutter/material.dart';
 class DropDownMenuRoute extends PopupRoute {
   ///点击控件的相对位置信息
   final Rect position;
+
   ///下拉控件高度
   final double menuHeight;
+
   ///下拉控件宽度
   final double menuWidth;
+
   ///弹窗控件布局
   final Widget itemView;
+
   ///偏移量
   final double offset;
+
   ///构造方法
-  DropDownMenuRoute({required this.position,required this.menuWidth, required this.menuHeight,
-    required this.offset,required this.itemView});
+  DropDownMenuRoute(
+      {required this.position,
+      required this.menuWidth,
+      required this.menuHeight,
+      required this.offset,
+      required this.itemView});
 
   @override
   // TODO: implement barrierColor
@@ -32,17 +41,19 @@ class DropDownMenuRoute extends PopupRoute {
   String? get barrierLabel => null;
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
     return CustomSingleChildLayout(
-      delegate: DropDownMenuRouteLayout(position: position,
-          menuWidth: menuWidth, menuHeight: menuHeight,offset:offset),
+      delegate: DropDownMenuRouteLayout(
+          position: position,
+          menuWidth: menuWidth,
+          menuHeight: menuHeight,
+          offset: offset),
       child: FadeTransition(
-        opacity: Tween<double>(
-          begin: 0.0,
-          end: 1.0
-        ).animate(animation),
+        opacity: Tween<double>(begin: 0.0, end: 1.0).animate(animation),
         child: itemView,
       ),
+
       ///这里加入了下拉动画
       // child: SizeTransition(
       //   sizeFactor: Tween<double>(
@@ -58,15 +69,19 @@ class DropDownMenuRoute extends PopupRoute {
   @override
   // TODO: implement transitionDuration
   Duration get transitionDuration => Duration(milliseconds: 300);
-
 }
+
 ///下拉选择布局控制器
 class DropDownMenuRouteLayout extends SingleChildLayoutDelegate {
   final Rect position;
   final double menuHeight;
   final double menuWidth;
   final double offset;
-  DropDownMenuRouteLayout({required this.position,required this.menuWidth, required this.menuHeight,required this.offset});
+  DropDownMenuRouteLayout(
+      {required this.position,
+      required this.menuWidth,
+      required this.menuHeight,
+      required this.offset});
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
@@ -78,7 +93,7 @@ class DropDownMenuRouteLayout extends SingleChildLayoutDelegate {
   @override
   Offset getPositionForChild(Size size, Size childSize) {
     ///控制下拉控件显示位置，这里始终居于点击控件的下方
-    return Offset(offset, position.bottom+5);
+    return Offset(offset, position.bottom + 5);
   }
 
   @override
@@ -86,5 +101,4 @@ class DropDownMenuRouteLayout extends SingleChildLayoutDelegate {
     // TODO: implement shouldRelayout
     return true;
   }
-
 }

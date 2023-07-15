@@ -20,17 +20,14 @@ class _SelectRegisterTypePageState extends State<SelectRegisterTypePage> {
   Widget build(BuildContext context) {
     ThemeData baseColor = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(''),
-      ),
+      appBar: AppBar(),
       body: ListView(
         children: [
           Center(
             child: Text(
-              I18nContent.selectAccountLabel,
-              style: baseColor.textTheme.headlineSmall!.copyWith(
-                color: Colors.black
-              ),
+              I18nContent.selectAccountLabel.tr,
+              style: baseColor.textTheme.headlineSmall!
+                  .copyWith(color: Colors.black),
             ),
           ),
           const SizedBox(
@@ -42,9 +39,8 @@ class _SelectRegisterTypePageState extends State<SelectRegisterTypePage> {
               child: Text(
                 'Please select an account ty'
                 'pe that is most suited to your business needs',
-                style:baseColor.textTheme.titleLarge!.copyWith(
-                  color: kDTCloudGray
-                ),
+                style: baseColor.textTheme.titleLarge!
+                    .copyWith(color: kDTCloudGray),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -56,9 +52,8 @@ class _SelectRegisterTypePageState extends State<SelectRegisterTypePage> {
             padding: const EdgeInsets.only(left: 25, right: 0),
             child: Text(
               I18nContent.buyerLabel,
-              style: baseColor.textTheme.headlineSmall!.copyWith(
-                color: Colors.black
-              ),
+              style: baseColor.textTheme.headlineSmall!
+                  .copyWith(color: Colors.black),
             ),
           ),
           GestureDetector(
@@ -66,6 +61,15 @@ class _SelectRegisterTypePageState extends State<SelectRegisterTypePage> {
                 Get.to(SignUpIndividualBuyerPage());
               },
               child: Image.asset('images/register_bg1.png')),
+
+          Padding(
+            padding: const EdgeInsets.only(left: 25, right: 0),
+            child: Text(
+              I18nContent.executive.tr,
+              style: baseColor.textTheme.headlineSmall!
+                  .copyWith(color: Colors.black),
+            ),
+          ),
           GestureDetector(
             onTap: () {
               // BotToast.showText(text: '暂不开放注册');
@@ -73,15 +77,6 @@ class _SelectRegisterTypePageState extends State<SelectRegisterTypePage> {
               Get.to(SignUpEnterPriseBuyerPage());
             },
             child: Image.asset('images/register_bg2.png'),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 25, right: 0),
-            child: Text(
-              I18nContent.supplier,
-              style: baseColor.textTheme.headlineSmall!.copyWith(
-                color: Colors.black
-              ),
-            ),
           ),
           GestureDetector(
             onTap: () {
